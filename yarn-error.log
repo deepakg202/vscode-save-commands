@@ -14,7 +14,7 @@ Platform:
   linux x64
 
 Trace: 
-  SyntaxError: /home/deepak/Desktop/code/save-commands/package.json: Unexpected string in JSON at position 1202
+  SyntaxError: /home/deepak/Desktop/code/save-commands/package.json: Unexpected token { in JSON at position 3115
       at JSON.parse (<anonymous>)
       at /usr/share/yarn/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
@@ -36,52 +36,72 @@ npm manifest:
   	"activationEvents": [
   		"onCommand:save-commands.addCommand",
   		"onCommand:save-commands.addGlobalCommand",
+  		"onCommand:save-commands.refreshView",
+  		"onCommand:save-commands.reset",
   		"onView:save-commands-view"
   	],
   	"main": "./dist/extension.js",
   	"contributes": {
   		"commands": [
   			{
+  				"command": "save-commands.refreshView",
+  				"title": "Refresh",
+  				"icon": {
+  					"light": "resources/light/refresh.svg",
+  					"dark": "resources/dark/refresh.svg"
+  				}
+  			},
+  			{
+  				"command": "save-commands.deleteCommand",
+  				"title": "Delete Command",
+  				"category": "Save Commands"
+  			},
+  			{
+  				"command": "save-commands.reset",
+  				"title": "Reset Extension",
+  				"category": "Save Commands"
+  			},
+  			{
   				"command": "save-commands.addCommand",
   				"title": "Add Command",
-  				"category": "Save Command"
+  				"icon": "resources/dep.svg",
+  				"category": "Save Commands"
   			},
   			{
   				"command": "save-commands.addGlobalCommand",
   				"title": "Add Global Command",
-  				"category": "Save Command"
+  				"icon": "resources/dep.svg",
+  				"category": "Save Commands"
+  			},
+  			{
+  				"command": "save-commands.deleteWorkspaceCommands",
+  				"title": "Delete Workspace Commands",
+  				"icon": "resources/dep.svg",
+  				"category": "Save Commands"
+  			},
+  			{
+  				"command": "save-commands.deleteGlobalCommands",
+  				"title": "Delete Global Commands",
+  				"icon": "resources/dep.svg",
+  				"category": "Save Commands"
+  			},
+  			{
+  				"command": "save-commands.runCommand",
+  				"title": "Run Command",
+  				"category": "Save Commands",
+  				"icon": {
+  					"light": "resources/light/boolean.svg",
+  					"dark": "resources/dark/boolean.svg"
+  				}
   			}
   		],
-  		"menus": {
-  			"view/title": [
-  				{
-  					"command": "nodeDependencies.refreshEntry",
-  					"when": "view == nodeDependencies",
-  					"group": "navigation"
-  				},
-  				{
-  					"command": "nodeDependencies.addEntry",
-  					"when": "view == nodeDependencies"
-  				}
-  			],
-  			"view/item/context": [
-  				{
-  					"command": "nodeDependencies.editEntry",
-  					"when": "view == nodeDependencies && viewItem == dependency",
-  					"group": "inline"
-  				},
-  				{
-  					"command": "nodeDependencies.deleteEntry",
-  					"when": "view == nodeDependencies && viewItem == dependency"
-  				}
-  			]
-  		}
   		"viewsContainers": {
   			"activitybar": [
   				{
   					"id": "save-commands-view",
   					"title": "Save Commands",
-  					"icon": "media/dep.svg"
+  					"icon": "resources/dep.svg",
+  					"cotextualTitle": "Save Commands View"
   				}
   			]
   		},
@@ -90,6 +110,60 @@ npm manifest:
   				{
   					"id": "save-commands-view",
   					"name": "Save Commands"
+  				}
+  			]
+  		},
+  		"menus": {
+  			"commandPalette": [
+  				{
+  					"command": "save-commands.refreshView",
+  					"when": "false"
+  				},
+  				{
+  					"command": "save-commands.runCommand",
+  					"when": "false"
+  				}
+  			],
+  			"view/title": [
+  				{
+  					"command": "save-commands.reset",
+  					"when": "view == save-commands-view"
+  				},
+  				{
+  					"command": "save-commands.refreshView",
+  					"when": "view == save-commands-view",
+  					"group": "navigation"
+  				}
+  			],
+  			"view/item/context": [
+  				{
+  					"command": "save-commands.deleteCommand",
+  					"when": "view == save-commands-view"
+  				},
+  				{
+  					"command": "save-commands.runCommand",
+  					"group": "inline",
+  					"when": "view == save-commands-view && viewItem == child"
+  				},
+  				{
+  					"command": "save-commands.addCommand",
+  					"group": "inline",
+  					"when": "view == save-commands-view && viewItem == parent-workspace"
+  				},
+  				{
+  					"command": "save-commands.addGlobalCommand",
+  					"group": "inline",
+  					"when": "view == save-commands-view && viewItem == parent-global"
+  				}
+  				{
+  					"command": "save-commands.deleteWorkspaceCommands",
+  					"group": "inline",
+  					"when": "view == save-commands-view && viewItem == parent-workspace"
+  				},
+  				{
+  					"command": "save-commands.deleteGlobalCommands",
+  					"group": "inline",
+  					"when": "view == save-commands-view && viewItem == parent-global"
   				}
   			]
   		}

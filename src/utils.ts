@@ -1,10 +1,12 @@
 import * as vscode from 'vscode';
 
-export const commandInput = async () => {
-    try {
-        const name = await vscode.window.showInputBox({prompt: 'Command Name', placeHolder: 'Command Name'}) as string;
-        const cmd = await vscode.window.showInputBox({prompt: 'Add Command', placeHolder: 'Command'}) as string;
-        return Promise.resolve({name: name, cmd: cmd});
+export const commandInput = async (defaults?:any) => {
+    try { 
+        const name = await vscode.window.showInputBox({prompt: 'Command Name', placeHolder: 'Command Name', value: defaults?.name||undefined}) as string;
+        const cmd = await vscode.window.showInputBox({prompt: 'Add Command', placeHolder: 'Command',value: defaults?.cmd||undefined}) as string;
+        if(!name.trim() || !cmd.trim())
+        {throw new Error('Bad Input');}
+        return Promise.resolve({name: name.trim(), cmd: cmd.trim()});
     }
     catch(err)
     {

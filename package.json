@@ -1,7 +1,7 @@
 {
 	"name": "save-commands",
-	"displayName": "save-commands",
-	"description": "",
+	"displayName": "Save Commands",
+	"description": "Simple VSCode Extension to save and execute terminal commands.",
 	"version": "0.0.1",
 	"engines": {
 		"vscode": "^1.52.0"
@@ -12,36 +12,180 @@
 	"activationEvents": [
 		"onCommand:save-commands.addCommand",
 		"onCommand:save-commands.addGlobalCommand",
+		"onCommand:save-commands.deleteWorkspaceCommands",
+		"onCommand:save-commands.deleteGlobalCommands",
+		"onCommand:save-commands.reset",
 		"onView:save-commands-view"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
 			{
+				"command": "save-commands.refreshView",
+				"title": "Refresh",
+				"icon": {
+					"light": "resources/light/refresh.svg",
+					"dark": "resources/dark/refresh.svg"
+				}
+			},
+			{
+				"command": "save-commands.deleteCommand",
+				"title": "Delete Command",
+				"category": "Save Commands"
+			},
+			{
+				"command": "save-commands.reset",
+				"title": "Delete All Saved Commands",
+				"category": "Save Commands"
+			},
+			{
 				"command": "save-commands.addCommand",
 				"title": "Add Command",
-				"category": "Save Command"
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				},
+				"category": "Save Commands"
+			},
+			{
+				"command": "save-commands.editCommand",
+				"title": "Edit Command",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				},
+				"category": "Save Commands"
 			},
 			{
 				"command": "save-commands.addGlobalCommand",
 				"title": "Add Global Command",
-				"category": "Save Command"
+				"icon": {
+					"light": "resources/light/add.svg",
+					"dark": "resources/dark/add.svg"
+				},
+				"category": "Save Commands"
+			},
+			{
+				"command": "save-commands.deleteWorkspaceCommands",
+				"title": "Delete Workspace Commands",
+				"icon": {
+					"light": "resources/light/trash.svg",
+					"dark": "resources/dark/trash.svg"
+				},
+				"category": "Save Commands"
+			},
+			{
+				"command": "save-commands.deleteGlobalCommands",
+				"title": "Delete Global Commands",
+				"icon": {
+					"light": "resources/light/trash.svg",
+					"dark": "resources/dark/trash.svg"
+				},
+				"category": "Save Commands"
+			},
+			{
+				"command": "save-commands.runCommand",
+				"title": "Try Running Command",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
+				"command": "save-commands.copyCommand",
+				"title": "Copy Command to Clipboard",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/files.svg",
+					"dark": "resources/dark/files.svg"
+				}
 			}
 		],
-		"viewsContainers": {
-			"activitybar": [
+		"views": {
+			"explorer": [
 				{
 					"id": "save-commands-view",
-					"title": "Save Commands",
-					"icon": "media/dep.svg"
+					"name": "Saved Commands"
 				}
 			]
 		},
-		"views": {
-			"save-commands-view": [
+		"menus": {
+			"commandPalette": [
 				{
-					"id": "save-commands-view",
-					"name": "Save Commands"
+					"command": "save-commands.refreshView",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.deleteCommand",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.editCommand",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.runCommand",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.copyCommand",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.reset",
+					"when": "false"
+				}
+			],
+			"view/title": [
+				{
+					"command": "save-commands.reset",
+					"when": "view == save-commands-view"
+				},
+				{
+					"command": "save-commands.refreshView",
+					"when": "view == save-commands-view",
+					"group": "navigation"
+				}
+			],
+			"view/item/context": [
+				{
+					"command": "save-commands.editCommand",
+					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+				},
+				{
+					"command": "save-commands.deleteCommand",
+					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+				},
+				{
+					"command": "save-commands.copyCommand",
+					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace",
+					"group": "inline"
+				},
+				{
+					"command": "save-commands.runCommand",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+				},
+				{
+					"command": "save-commands.addCommand",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == parent-workspace"
+				},
+				{
+					"command": "save-commands.addGlobalCommand",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == parent-global"
+				},
+				{
+					"command": "save-commands.deleteWorkspaceCommands",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == parent-workspace"
+				},
+				{
+					"command": "save-commands.deleteGlobalCommands",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == parent-global"
 				}
 			]
 		}
@@ -72,5 +216,6 @@
 		"ts-loader": "^8.0.11",
 		"webpack": "^5.10.0",
 		"webpack-cli": "^4.2.0"
-	}
+	},
+	"publisher": "deepakgupta191199"
 }
