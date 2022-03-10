@@ -2,7 +2,8 @@ import * as vscode from 'vscode';
 import * as utils from './utils';
 import TreeDataProvider from './TreeProvider';
 import TreeItem from './TreeItem';
-const term = vscode.window.createTerminal('Save Commands');
+
+const terminals: Array<vscode.Terminal> = [];
 
 export function activate(context: vscode.ExtensionContext) {
 	const treeView = new TreeDataProvider(context);
@@ -127,8 +128,10 @@ export function activate(context: vscode.ExtensionContext) {
 			}
 			const i = c.findIndex((d: any) => d.id === item.cmdId);
 			if (i > -1) {
-				term.sendText(c[i].command);
-				term.show();
+				const terminalId = `${c[i].name}-${utils.generateString(5)}`;
+				const terminal = vscode.window.createTerminal(terminalId);
+				terminal.sendText(c[i].command);
+				terminal.show();
 			}
 			else {
 				throw Error('Unable to find the command in state');
@@ -155,4 +158,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() { term.dispose(); }
+export function deactivate() { terminals.forEach((terminal) => terminal.dispose()); }

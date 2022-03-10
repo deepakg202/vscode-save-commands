@@ -11,7 +11,7 @@ export const commandInput = async (defaults?:any) => {
     catch(err)
     {
         console.log('Error Adding Command');
-        return Promise.reject(Error(err));
+        return Promise.reject(err);
     }
 };
 
@@ -21,3 +21,14 @@ export const uuidv4 = () => {
       return v.toString(16);
     });
   };
+
+
+const characters ='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+export const generateString = (length: number): string => {
+    let result = '';
+    const charactersLength = characters.length;
+    for ( let i = 0; i < length; i++ ) {
+        result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
+};
