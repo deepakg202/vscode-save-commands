@@ -2,7 +2,8 @@
 	"name": "save-commands",
 	"displayName": "Save Commands",
 	"description": "Simple VSCode Extension to save and execute terminal commands.",
-	"version": "0.1.2",
+	"icon": "media/save-commands.png",
+	"version": "0.2.0",
 	"engines": {
 		"vscode": "^1.69.x"
 	},
