@@ -38,30 +38,54 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	const deleteWorkspace = vscode.commands.registerCommand('save-commands.deleteWorkspaceCommands', () => {
-		context.workspaceState.update('commands', []);
-		vscode.commands.executeCommand('save-commands.refreshView');
-		vscode.window.showInformationMessage('Workspace Commands Deleted');
+		const commands = context.workspaceState.get('commands');
+		if((!commands || (commands as Array<any>).length === 0)) {
+			return;
+		}
+		utils.confirmationDialog({
+			onConfirm: () => {
+				context.workspaceState.update('commands', []);
+				vscode.commands.executeCommand('save-commands.refreshView');
+				vscode.window.showInformationMessage('Workspace Commands Deleted');		
+			},
+			message: "Are you sure you want to delete all workspace commands ?"
+		});
 	});
 	const deleteGlobal = vscode.commands.registerCommand('save-commands.deleteGlobalCommands', () => {
-		context.globalState.update('commands', []);
-		vscode.commands.executeCommand('save-commands.refreshView');
-		vscode.window.showInformationMessage('Global Commands Deleted');
+		const commands = context.globalState.get('commands');
+		if((!commands || (commands as Array<any>).length === 0)) {
+			return;
+		}
+		utils.confirmationDialog({
+			onConfirm: () => {
+				context.globalState.update('commands', []);
+				vscode.commands.executeCommand('save-commands.refreshView');
+				vscode.window.showInformationMessage('Global Commands Deleted');		
+			},
+			message: "Are you sure you want to delete all global commands ?"
+		});
 	});
 
 	const deleteCommand = vscode.commands.registerCommand('save-commands.deleteCommand', (item: TreeItem) => {
-		if (item.contextValue === 'child-global') {
-			let c = context.globalState.get('commands') as Array<object> || [];
-			const i = c.findIndex((d: any) => d.id === item.cmdId);
-			if (i > -1) { c.splice(i, 1); }
-			context.globalState.update('commands', c);
-		}
-		else if (item.contextValue === 'child-workspace') {
-			let c = context.workspaceState.get('commands') as Array<object> || [];
-			const i = c.findIndex((d: any) => d.id === item.cmdId);
-			if (i > -1) { c.splice(i, 1); }
-			context.workspaceState.update('commands', c);
-		}
-		vscode.commands.executeCommand('save-commands.refreshView');
+		utils.confirmationDialog({
+			onConfirm: () => {
+				if (item.contextValue === 'child-global') {
+					let c = context.globalState.get('commands') as Array<object> || [];
+					const i = c.findIndex((d: any) => d.id === item.cmdId);
+					if (i > -1) { c.splice(i, 1); }
+					context.globalState.update('commands', c);
+				}
+				else if (item.contextValue === 'child-workspace') {
+					let c = context.workspaceState.get('commands') as Array<object> || [];
+					const i = c.findIndex((d: any) => d.id === item.cmdId);
+					if (i > -1) { c.splice(i, 1); }
+					context.workspaceState.update('commands', c);
+				}
+				vscode.commands.executeCommand('save-commands.refreshView');		
+			},
+			message: "Are you sure you want to delete the command ?"
+		});
+
 	});
 
 	const editCommand = vscode.commands.registerCommand('save-commands.editCommand', (item: TreeItem) => {
@@ -141,9 +165,14 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	});
 	const reset = vscode.commands.registerCommand('save-commands.reset', () => {
-		context.workspaceState.update('commands', []);
-		context.globalState.update('commands', []);
-		vscode.commands.executeCommand('save-commands.refreshView');
+		utils.confirmationDialog({
+			onConfirm: () => {
+				context.workspaceState.update('commands', []);
+				context.globalState.update('commands', []);
+				vscode.commands.executeCommand('save-commands.refreshView');		
+			},
+			message: "Are you sure you want to delete all saved commands ?"
+		});
 	});
 
 	const refreshView = vscode.commands.registerCommand('save-commands.refreshView', () => {
