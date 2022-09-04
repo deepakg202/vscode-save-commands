@@ -73,8 +73,7 @@
 					"light": "resources/light/trash.svg",
 					"dark": "resources/dark/trash.svg"
 				},
-				"category": "Save Commands",
-				"enablement": ""
+				"category": "Save Commands"
 			},
 			{
 				"command": "save-commands.deleteGlobalCommands",
