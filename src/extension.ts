@@ -48,7 +48,7 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.commands.executeCommand('save-commands.refreshView');
 				vscode.window.showInformationMessage('Workspace Commands Deleted');		
 			},
-			message: "Are you sure you want to delete all workspace commands ?"
+			message: "Are you sure you want to delete all workspace commands?"
 		});
 	});
 	const deleteGlobal = vscode.commands.registerCommand('save-commands.deleteGlobalCommands', () => {
@@ -62,7 +62,7 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.commands.executeCommand('save-commands.refreshView');
 				vscode.window.showInformationMessage('Global Commands Deleted');		
 			},
-			message: "Are you sure you want to delete all global commands ?"
+			message: "Are you sure you want to delete all global commands?"
 		});
 	});
 
@@ -83,7 +83,7 @@ export function activate(context: vscode.ExtensionContext) {
 				}
 				vscode.commands.executeCommand('save-commands.refreshView');		
 			},
-			message: "Are you sure you want to delete the command ?"
+			message: "Are you sure you want to delete the command?"
 		});
 
 	});
@@ -171,7 +171,7 @@ export function activate(context: vscode.ExtensionContext) {
 				context.globalState.update('commands', []);
 				vscode.commands.executeCommand('save-commands.refreshView');		
 			},
-			message: "Are you sure you want to delete all saved commands ?"
+			message: "Are you sure you want to delete all saved commands?"
 		});
 	});
 

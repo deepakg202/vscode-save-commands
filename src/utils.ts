@@ -49,7 +49,7 @@ export const generateString = (length: number): string => {
 export const confirmationDialog = (args: ConfirmationArgs) => {
   vscode.window
     .showInformationMessage(
-      args.message ?? "Are you sure you want to do this ?",
+      args.message ?? "Are you sure you want to do this?",
       Decision.yes,
       Decision.no
     )
