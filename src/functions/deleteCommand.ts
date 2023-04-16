@@ -10,14 +10,14 @@ export default function (context: vscode.ExtensionContext) {
       onConfirm: () => {
         if (item.contextValue === "child-global") {
           let c = Command.getGlobalCommands(context);
-          const i = c.findIndex((d: any) => d.id === item.cmdId);
+          const i = c.findIndex((d: Command) => d.id === item.cmdId);
           if (i > -1) {
             c.splice(i, 1);
           }
           context.globalState.update(COMMAND_STORAGE_KEY, c);
         } else if (item.contextValue === "child-workspace") {
           let c = Command.getWorkspaceCommands(context);
-          const i = c.findIndex((d: any) => d.id === item.cmdId);
+          const i = c.findIndex((d: Command) => d.id === item.cmdId);
           if (i > -1) {
             c.splice(i, 1);
           }

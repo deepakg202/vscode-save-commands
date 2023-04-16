@@ -7,10 +7,15 @@ export default class Command {
   name: string;
   command: string;
 
-  constructor(name: string, command: string) {
-    this.id = uuidv4();
+  constructor(id: string, name: string, command: string) {
+    this.id = id;
     this.name = name;
     this.command = command;
+  }
+
+  static create(name: string, command: string) {
+    const id = uuidv4();
+    return new Command(id, name, command);
   }
 
   toJson(): Record<string, string> {
@@ -19,6 +24,14 @@ export default class Command {
       name: this.name,
       command: this.command,
     };
+  }
+
+  fromJson(json: Record<string, unknown>): Command {
+    return new Command(
+      json["id"] as string,
+      json["name"] as string,
+      json["command"] as string
+    );
   }
 
   static getWorkspaceCommands(context: ExtensionContext): Array<Command> {
@@ -30,5 +43,9 @@ export default class Command {
     return (
       (context.workspaceState.get(COMMAND_STORAGE_KEY) as Array<Command>) ?? []
     );
+  }
+
+  async resolveCommand(context: ExtensionContext): Promise<string> {
+    return "";
   }
 }

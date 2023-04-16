@@ -6,7 +6,7 @@ import { ExecCommands } from "../models/exec_commands";
 export default function (context: vscode.ExtensionContext) {
   return () => {
     const commands = Command.getGlobalCommands(context);
-    if (!commands || (commands as Array<any>).length === 0) {
+    if (!commands || commands.length === 0) {
       return;
     }
     confirmationDialog({

@@ -10,7 +10,7 @@ export default function (context: vscode.ExtensionContext) {
       const val = await commandInput();
       let c = Command.getGlobalCommands(context);
       // TODO: Can be refactored more
-      const command = new Command(val.name, val.cmd);
+      const command = Command.create(val.name, val.cmd);
       c.push(command);
       context.globalState.update(COMMAND_STORAGE_KEY, c);
       context.globalState.setKeysForSync([COMMAND_STORAGE_KEY]);

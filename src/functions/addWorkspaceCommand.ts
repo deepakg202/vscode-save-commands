@@ -9,7 +9,7 @@ export default function (context: vscode.ExtensionContext) {
     try {
       const val = await commandInput();
       let c = Command.getWorkspaceCommands(context);
-      const command = new Command(val.name, val.cmd);
+      const command = Command.create(val.name, val.cmd);
       c.push(command);
       context.workspaceState.update(COMMAND_STORAGE_KEY, c);
       vscode.window.showInformationMessage(

@@ -3,26 +3,32 @@ import { commandInput } from "../utils";
 import TreeItem from "../TreeItem";
 import Command, { COMMAND_STORAGE_KEY } from "../models/command";
 import { ExecCommands } from "../models/exec_commands";
+import ReadableError from "../models/error";
 
 // TODO: Can be refactored
 export default function (context: vscode.ExtensionContext) {
   return async (item: TreeItem) => {
-    let c: any;
+    let commands: Array<Command>;
     try {
       if (item.contextValue === "child-workspace") {
-        c = Command.getWorkspaceCommands(context);
+        commands = Command.getWorkspaceCommands(context);
       } else if (item.contextValue === "child-global") {
-        c = Command.getGlobalCommands(context);
+        commands = Command.getGlobalCommands(context);
+      } else {
+        throw new ReadableError("Unknown contextValue");
       }
-      const i = c.findIndex((d: any) => d.id === item.cmdId);
+      const i = commands.findIndex((d: Command) => d.id === item.cmdId);
       if (i > -1) {
-        const val = await commandInput({ name: c[i].name, cmd: c[i].command });
-        c[i].name = val.name;
-        c[i].command = val.cmd;
+        const val = await commandInput({
+          name: commands[i].name,
+          cmd: commands[i].command,
+        });
+        commands[i].name = val.name;
+        commands[i].command = val.cmd;
         if (item.contextValue === "child-workspace") {
-          context.workspaceState.update(COMMAND_STORAGE_KEY, c);
+          context.workspaceState.update(COMMAND_STORAGE_KEY, commands);
         } else if (item.contextValue === "child-global") {
-          context.globalState.update(COMMAND_STORAGE_KEY, c);
+          context.globalState.update(COMMAND_STORAGE_KEY, commands);
         }
         vscode.commands.executeCommand(ExecCommands.refreshView);
       } else {

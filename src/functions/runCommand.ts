@@ -6,19 +6,22 @@ import { generateString } from "../utils";
 
 // TODO: Can be refactored
 export default function (context: vscode.ExtensionContext) {
-  return (item: TreeItem) => {
-    let c: any;
+  return async (item: TreeItem) => {
+    let commands: Array<Command>;
     try {
       if (item.contextValue === "child-workspace") {
-        c = Command.getWorkspaceCommands(context);
+        commands = Command.getWorkspaceCommands(context);
       } else if (item.contextValue === "child-global") {
-        c = Command.getGlobalCommands(context);
+        commands = Command.getGlobalCommands(context);
+      } else {
+        throw new ReadableError("Unknown contextValue");
       }
-      const i = c.findIndex((d: any) => d.id === item.cmdId);
+      const i = commands.findIndex((d: Command) => d.id === item.cmdId);
       if (i > -1) {
-        const terminalId = `${c[i].name}-${generateString(5)}`;
+        const terminalId = `${commands[i].name}-${generateString(5)}`;
         const terminal = vscode.window.createTerminal(terminalId);
-        terminal.sendText(c[i].command);
+        const resolvedCommand = await commands[i].resolveCommand(context);
+        terminal.sendText(resolvedCommand);
         terminal.show();
       } else {
         throw new ReadableError("Unable to find the command in state");
