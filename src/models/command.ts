@@ -1,4 +1,4 @@
-import { deserializeArray, plainToClass } from "class-transformer";
+import { plainToClass } from "class-transformer";
 import { uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
 export const COMMAND_STORAGE_KEY = "commands";
