@@ -1,28 +1,29 @@
 import * as vscode from "vscode";
 import { confirmationDialog } from "../utils";
 import TreeItem from "../TreeItem";
+import Command, { COMMAND_STORAGE_KEY } from "../models/command";
+import { ExecCommands } from "../models/exec_commands";
 
 export default function (context: vscode.ExtensionContext) {
   return async (item: TreeItem) => {
     confirmationDialog({
       onConfirm: () => {
         if (item.contextValue === "child-global") {
-          let c = (context.globalState.get("commands") as Array<object>) || [];
+          let c = Command.getGlobalCommands(context);
           const i = c.findIndex((d: any) => d.id === item.cmdId);
           if (i > -1) {
             c.splice(i, 1);
           }
-          context.globalState.update("commands", c);
+          context.globalState.update(COMMAND_STORAGE_KEY, c);
         } else if (item.contextValue === "child-workspace") {
-          let c =
-            (context.workspaceState.get("commands") as Array<object>) || [];
+          let c = Command.getWorkspaceCommands(context);
           const i = c.findIndex((d: any) => d.id === item.cmdId);
           if (i > -1) {
             c.splice(i, 1);
           }
-          context.workspaceState.update("commands", c);
+          context.workspaceState.update(COMMAND_STORAGE_KEY, c);
         }
-        vscode.commands.executeCommand("save-commands.refreshView");
+        vscode.commands.executeCommand(ExecCommands.refreshView);
       },
       message: "Are you sure you want to delete the command?",
     });

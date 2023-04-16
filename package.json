@@ -10,14 +10,6 @@
 	"categories": [
 		"Other"
 	],
-	"activationEvents": [
-		"onCommand:save-commands.addCommand",
-		"onCommand:save-commands.addGlobalCommand",
-		"onCommand:save-commands.deleteWorkspaceCommands",
-		"onCommand:save-commands.deleteGlobalCommands",
-		"onCommand:save-commands.reset",
-		"onView:save-commands-view"
-	],
 	"main": "./dist/extension.js",
 	"contributes": {
 		"commands": [
@@ -94,6 +86,15 @@
 				}
 			},
 			{
+				"command": "save-commands.runCommandInActiveTerminal",
+				"title": "Try Running Command In Active Terminal",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/run.svg",
+					"dark": "resources/dark/run.svg"
+				}
+			},
+			{
 				"command": "save-commands.copyCommand",
 				"title": "Copy Command to Clipboard",
 				"category": "Save Commands",
@@ -127,6 +128,10 @@
 				},
 				{
 					"command": "save-commands.runCommand",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.runCommandInActiveTerminal",
 					"when": "false"
 				},
 				{
@@ -165,6 +170,11 @@
 				},
 				{
 					"command": "save-commands.runCommand",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+				},
+				{
+					"command": "save-commands.runCommandInActiveTerminal",
 					"group": "inline",
 					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
 				},

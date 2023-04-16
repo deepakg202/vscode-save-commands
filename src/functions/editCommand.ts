@@ -1,15 +1,18 @@
 import * as vscode from "vscode";
 import { commandInput } from "../utils";
 import TreeItem from "../TreeItem";
+import Command, { COMMAND_STORAGE_KEY } from "../models/command";
+import { ExecCommands } from "../models/exec_commands";
 
+// TODO: Can be refactored
 export default function (context: vscode.ExtensionContext) {
   return async (item: TreeItem) => {
     let c: any;
     try {
       if (item.contextValue === "child-workspace") {
-        c = (context.workspaceState.get("commands") as Array<object>) || [];
+        c = Command.getWorkspaceCommands(context);
       } else if (item.contextValue === "child-global") {
-        c = (context.globalState.get("commands") as Array<object>) || [];
+        c = Command.getGlobalCommands(context);
       }
       const i = c.findIndex((d: any) => d.id === item.cmdId);
       if (i > -1) {
@@ -17,11 +20,11 @@ export default function (context: vscode.ExtensionContext) {
         c[i].name = val.name;
         c[i].command = val.cmd;
         if (item.contextValue === "child-workspace") {
-          context.workspaceState.update("commands", c);
+          context.workspaceState.update(COMMAND_STORAGE_KEY, c);
         } else if (item.contextValue === "child-global") {
-          context.globalState.update("commands", c);
+          context.globalState.update(COMMAND_STORAGE_KEY, c);
         }
-        vscode.commands.executeCommand("save-commands.refreshView");
+        vscode.commands.executeCommand(ExecCommands.refreshView);
       } else {
         throw Error("Unable to find the command in state");
       }

@@ -1,19 +1,21 @@
 import * as vscode from "vscode";
-import { commandInput, uuidv4 } from "../utils";
+import { commandInput } from "../utils";
+import Command, { COMMAND_STORAGE_KEY } from "../models/command";
+import { ExecCommands } from "../models/exec_commands";
 
 export default function (context: vscode.ExtensionContext) {
   return async () => {
     vscode.window.showWarningMessage("Add Workspace Command");
     try {
       const val = await commandInput();
-      let c = (context.workspaceState.get("commands") as Array<object>) || [];
-      const id = uuidv4() as string;
-      c.push({ id: id, name: val.name, command: val.cmd });
-      context.workspaceState.update("commands", c);
+      let c = Command.getWorkspaceCommands(context);
+      const command = new Command(val.name, val.cmd);
+      c.push(command);
+      context.workspaceState.update(COMMAND_STORAGE_KEY, c);
       vscode.window.showInformationMessage(
         "Added Workspace Command Successfully"
       );
-      vscode.commands.executeCommand("save-commands.refreshView");
+      vscode.commands.executeCommand(ExecCommands.refreshView);
     } catch (er) {
       vscode.window.showErrorMessage("Error Adding Command");
       console.error(er);
