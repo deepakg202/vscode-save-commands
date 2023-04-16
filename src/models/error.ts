@@ -1,4 +1,4 @@
-class ReadableError extends Error {
+export default class ReadableError extends Error {
   constructor(message: string) {
     super(message);
     this.name = "ReadableError";

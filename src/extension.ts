@@ -1,7 +1,5 @@
 import * as vscode from "vscode";
-import * as utils from "./utils";
 import TreeDataProvider from "./TreeProvider";
-import TreeItem from "./TreeItem";
 import addCommandFn from "./functions/addWorkspaceCommand";
 import addGlobalCommandFn from "./functions/addGlobalCommand";
 import deleteWorkspaceCommands from "./functions/deleteWorkspaceCommands";
@@ -10,11 +8,9 @@ import deleteCommandFn from "./functions/deleteCommand";
 import editCommandFn from "./functions/editCommand";
 import resetFn from "./functions/reset";
 import copyCommandFn from "./functions/copyCommand";
-import Command from "./models/command";
 import { ExecCommands } from "./models/exec_commands";
 import runCommandInActiveTerminalFn from "./functions/runCommandInActiveTerminal";
-
-const terminals: Array<vscode.Terminal> = [];
+import runCommandFn from "./functions/runCommand";
 
 export function activate(context: vscode.ExtensionContext) {
   const treeView = new TreeDataProvider(context);
@@ -53,31 +49,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const runCommand = vscode.commands.registerCommand(
     ExecCommands.runCommand,
-    (item: TreeItem) => {
-      let c: any;
-      try {
-        if (item.contextValue === "child-workspace") {
-          c = Command.getWorkspaceCommands(context);
-        } else if (item.contextValue === "child-global") {
-          c = Command.getGlobalCommands(context);
-        }
-        const i = c.findIndex((d: any) => d.id === item.cmdId);
-        if (i > -1) {
-          const terminalId = `${c[i].name}-${utils.generateString(5)}`;
-          const terminal = vscode.window.createTerminal(terminalId);
-          terminal.sendText(c[i].command);
-          terminal.show();
-        } else {
-          throw new ReadableError("Unable to find the command in state");
-        }
-      } catch (e) {
-        if (e instanceof ReadableError) {
-          vscode.window.showErrorMessage(e.message);
-          return;
-        }
-        vscode.window.showErrorMessage("Unable to execute the command");
-      }
-    }
+    runCommandFn(context)
   );
 
   const runCommandInActiveTerminal = vscode.commands.registerCommand(
@@ -111,6 +83,4 @@ export function activate(context: vscode.ExtensionContext) {
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {
-  terminals.forEach((terminal) => terminal.dispose());
-}
+export function deactivate() {}

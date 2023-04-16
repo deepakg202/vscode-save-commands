@@ -1,12 +1,12 @@
 import * as vscode from "vscode";
-import * as childProcess from "child_process";
 import TreeItem from "../TreeItem";
 import Command from "../models/command";
 import ReadableError from "../models/error";
+import { generateString } from "../utils";
 
 // TODO: Can be refactored
 export default function (context: vscode.ExtensionContext) {
-  return async (item: TreeItem) => {
+  return (item: TreeItem) => {
     let c: any;
     try {
       if (item.contextValue === "child-workspace") {
@@ -16,14 +16,10 @@ export default function (context: vscode.ExtensionContext) {
       }
       const i = c.findIndex((d: any) => d.id === item.cmdId);
       if (i > -1) {
-        const activeTerminal = vscode.window.activeTerminal;
-        if (!activeTerminal) {
-          throw new ReadableError("No Active Terminal Found");
-        }
-
-        // TODO: Come back later to this
-        activeTerminal.sendText(c[i].command);
-        activeTerminal.show();
+        const terminalId = `${c[i].name}-${generateString(5)}`;
+        const terminal = vscode.window.createTerminal(terminalId);
+        terminal.sendText(c[i].command);
+        terminal.show();
       } else {
         throw new ReadableError("Unable to find the command in state");
       }
