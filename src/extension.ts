@@ -11,6 +11,7 @@ import copyCommandFn from "./functions/copyCommand";
 import { ExecCommands } from "./models/exec_commands";
 import runCommandInActiveTerminalFn from "./functions/runCommandInActiveTerminal";
 import runCommandFn from "./functions/runCommand";
+import "reflect-metadata";
 
 export function activate(context: vscode.ExtensionContext) {
   const treeView = new TreeDataProvider(context);

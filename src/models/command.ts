@@ -1,3 +1,4 @@
+import { deserializeArray, plainToClass } from "class-transformer";
 import { uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
 export const COMMAND_STORAGE_KEY = "commands";
@@ -35,17 +36,20 @@ export default class Command {
   }
 
   static getWorkspaceCommands(context: ExtensionContext): Array<Command> {
-    return (
-      (context.workspaceState.get(COMMAND_STORAGE_KEY) as Array<Command>) ?? []
-    );
+    const commands = (context.workspaceState.get(COMMAND_STORAGE_KEY) ??
+      []) as Array<object>;
+    return commands.map((value) => plainToClass(Command, value));
   }
   static getGlobalCommands(context: ExtensionContext): Array<Command> {
-    return (
-      (context.workspaceState.get(COMMAND_STORAGE_KEY) as Array<Command>) ?? []
-    );
+    const commands = (context.globalState.get(COMMAND_STORAGE_KEY) ??
+      []) as Array<object>;
+    return commands.map((value) => plainToClass(Command, value));
   }
 
   async resolveCommand(context: ExtensionContext): Promise<string> {
     return "";
   }
+}
+function instanceToClass(cls: any, value: object, options: any): any {
+  throw new Error("Function not implemented.");
 }

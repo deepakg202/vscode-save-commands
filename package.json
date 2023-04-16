@@ -233,5 +233,9 @@
 		"url": "https://github.com/deepakgupta191199/vscode-save-commands"
 	},
 	"license": "MIT",
-	"publisher": "deepakgupta191199"
+	"publisher": "deepakgupta191199",
+	"dependencies": {
+		"class-transformer": "^0.5.1",
+		"reflect-metadata": "^0.1.13"
+	}
 }
