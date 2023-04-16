@@ -50,6 +50,3 @@ export default class Command {
     return "";
   }
 }
-function instanceToClass(cls: any, value: object, options: any): any {
-  throw new Error("Function not implemented.");
-}
