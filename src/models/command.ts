@@ -1,5 +1,5 @@
 import { plainToClass } from "class-transformer";
-import { uuidv4 } from "../utils";
+import { singleInput as takeSingleInput, uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
 export const COMMAND_STORAGE_KEY = "commands";
 
@@ -47,6 +47,31 @@ export default class Command {
   }
 
   async resolveCommand(context: ExtensionContext): Promise<string> {
-    return "";
+    const regex = /{([^}]+)}/g;
+    const matches = this.command.match(regex);
+    if (!matches) {
+      return this.command;
+    }
+    const placeholders = matches.map((match) =>
+      match.substring(1, match.length - 1)
+    );
+    const inputs: Record<string, string> = {};
+    for (let placeholder of placeholders) {
+      const input = await takeSingleInput({
+        promptText: `Take input for ${placeholder}`,
+      });
+      inputs[placeholder] = input;
+    }
+    const resolvedCommand = this.command.replace(
+      regex,
+      (match, placeholder) => {
+        if (placeholder in inputs) {
+          return inputs[placeholder];
+        }
+        return match;
+      }
+    );
+
+    return resolvedCommand;
   }
 }

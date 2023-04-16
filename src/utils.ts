@@ -5,7 +5,24 @@ enum Decision {
   no = "No",
 }
 
-export const commandInput = async (defaults?: any) => {
+export const singleInput = async (options: { promptText: string }) => {
+  const { promptText } = options;
+  try {
+    return (await vscode.window.showInputBox({
+      prompt: promptText,
+      placeHolder: "Type Something",
+      value: "",
+    })) as string;
+  } catch (err) {
+    console.log("Error taking input");
+    return Promise.reject(err);
+  }
+};
+
+export const commandInput = async (defaults?: {
+  name?: string;
+  cmd?: string;
+}) => {
   try {
     const name = (await vscode.window.showInputBox({
       prompt: "Command Name",
@@ -27,7 +44,7 @@ export const commandInput = async (defaults?: any) => {
   }
 };
 
-export const uuidv4 = () : string => {
+export const uuidv4 = (): string => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
       v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -57,7 +74,9 @@ export const confirmationDialog = (args: ConfirmationArgs) => {
       if (ans === Decision.yes) {
         args.onConfirm();
       } else {
-        if (args.onReject) {args.onReject();}
+        if (args.onReject) {
+          args.onReject();
+        }
       }
     });
 };
