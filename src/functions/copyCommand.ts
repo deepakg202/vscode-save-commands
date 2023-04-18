@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import TreeItem from "../TreeItem";
-import Command, { COMMAND_STORAGE_KEY } from "../models/command";
+import Command from "../models/command";
 import ReadableError from "../models/error";
 
 export default function (context: vscode.ExtensionContext) {

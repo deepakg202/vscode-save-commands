@@ -1,21 +1,29 @@
+import { Readable } from "stream";
 import * as vscode from "vscode";
+import ReadableError from "./models/error";
 
 enum Decision {
   yes = "Yes",
   no = "No",
 }
 
-export const singleInput = async (options: { promptText: string }) => {
+export const singleInput = async (options: {
+  promptText: string;
+}): Promise<string> => {
   const { promptText } = options;
   try {
-    return (await vscode.window.showInputBox({
+    const str = await vscode.window.showInputBox({
       prompt: promptText,
       placeHolder: "Type Something",
       value: "",
-    })) as string;
+    });
+
+    if (!str) {
+      throw new ReadableError("No Input Captured");
+    }
+    return str;
   } catch (err) {
-    console.log("Error taking input");
-    return Promise.reject(err);
+    throw new ReadableError("Error taking input");
   }
 };
 
