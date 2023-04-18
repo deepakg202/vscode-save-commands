@@ -10,13 +10,19 @@ export default function (context: vscode.ExtensionContext) {
   return async (item: TreeItem) => {
     let commands: Array<Command>;
     try {
+      var workspaceType: string;
       if (item.contextValue === "child-workspace") {
         commands = Command.getWorkspaceCommands(context);
+        workspaceType = "Workspace";
       } else if (item.contextValue === "child-global") {
         commands = Command.getGlobalCommands(context);
+        workspaceType = "Global";
       } else {
         throw new ReadableError("Unknown contextValue");
       }
+      vscode.window.showInformationMessage(
+        `Editing ${item.label} | Scope: ${workspaceType}`
+      );
       const i = commands.findIndex((d: Command) => d.id === item.cmdId);
       if (i > -1) {
         const val = await commandInput({
@@ -30,9 +36,10 @@ export default function (context: vscode.ExtensionContext) {
         } else if (item.contextValue === "child-global") {
           context.globalState.update(COMMAND_STORAGE_KEY, commands);
         }
+
         vscode.commands.executeCommand(ExecCommands.refreshView);
       } else {
-        throw Error("Unable to find the command in state");
+        throw new ReadableError("Unable to find the command in state");
       }
     } catch (e) {
       vscode.window.showErrorMessage("Unable to edit the command");

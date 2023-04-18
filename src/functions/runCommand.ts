@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import TreeItem from "../TreeItem";
-import Command from "../models/command";
+import Command, { ResolveCommandType } from "../models/command";
 import ReadableError from "../models/error";
 import { generateString } from "../utils";
 
@@ -20,7 +20,10 @@ export default function (context: vscode.ExtensionContext) {
       if (i > -1) {
         const terminalId = `${commands[i].name}-${generateString(5)}`;
         const terminal = vscode.window.createTerminal(terminalId);
-        const resolvedCommand = await commands[i].resolveCommand(context);
+        const resolvedCommand = await commands[i].resolveCommand(
+          context,
+          ResolveCommandType.runNew
+        );
         terminal.sendText(resolvedCommand);
         terminal.show();
       } else {

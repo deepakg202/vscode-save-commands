@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import TreeItem from "../TreeItem";
-import Command from "../models/command";
+import Command, { ResolveCommandType } from "../models/command";
 import ReadableError from "../models/error";
 
 export default function (context: vscode.ExtensionContext) {
@@ -16,7 +16,10 @@ export default function (context: vscode.ExtensionContext) {
       }
       const i = c.findIndex((d: Command) => d.id === item.cmdId);
       if (i > -1) {
-        const resolvedCommand = await c[i].resolveCommand(context);
+        const resolvedCommand = await c[i].resolveCommand(
+          context,
+          ResolveCommandType.copy
+        );
         vscode.env.clipboard.writeText(resolvedCommand);
         vscode.window.showInformationMessage(
           `${c[i].name} Command Copied to Clipboard`

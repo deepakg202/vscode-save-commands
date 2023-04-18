@@ -1,4 +1,3 @@
-import { Readable } from "stream";
 import * as vscode from "vscode";
 import ReadableError from "./models/error";
 
@@ -9,12 +8,13 @@ enum Decision {
 
 export const singleInput = async (options: {
   promptText: string;
+  placeholder: string;
 }): Promise<string> => {
-  const { promptText } = options;
+  const { promptText, placeholder } = options;
   try {
     const str = await vscode.window.showInputBox({
       prompt: promptText,
-      placeHolder: "Type Something",
+      placeHolder: placeholder,
       value: "",
     });
 

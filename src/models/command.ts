@@ -3,6 +3,12 @@ import { singleInput as takeSingleInput, uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
 export const COMMAND_STORAGE_KEY = "commands";
 
+export const enum ResolveCommandType {
+  runActive = "RUN (Active)",
+  runNew = "RUN (New)",
+  copy = "COPY",
+}
+
 export default class Command {
   id: string;
   name: string;
@@ -46,7 +52,10 @@ export default class Command {
     return commands.map((value) => plainToClass(Command, value));
   }
 
-  async resolveCommand(context: ExtensionContext): Promise<string> {
+  async resolveCommand(
+    context: ExtensionContext,
+    resolveCommandType: ResolveCommandType
+  ): Promise<string> {
     const regex = /{([^}]+)}/g;
     const matches = this.command.match(regex);
     if (!matches) {
@@ -58,7 +67,8 @@ export default class Command {
     const inputs: Record<string, string> = {};
     for (let placeholder of placeholders) {
       const input = await takeSingleInput({
-        promptText: `Take input for ${placeholder}`,
+        promptText: `${resolveCommandType} | ${this.name} `,
+        placeholder: `Enter {${placeholder}}`,
       });
       inputs[placeholder] = input;
     }

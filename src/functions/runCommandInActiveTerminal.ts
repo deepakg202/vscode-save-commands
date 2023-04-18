@@ -1,6 +1,6 @@
 import * as vscode from "vscode";
 import TreeItem from "../TreeItem";
-import Command from "../models/command";
+import Command, { ResolveCommandType } from "../models/command";
 import ReadableError from "../models/error";
 
 // TODO: Can be refactored
@@ -23,7 +23,10 @@ export default function (context: vscode.ExtensionContext) {
         }
 
         // TODO: Come back later to this
-        const resolvedCommand = await commands[i].resolveCommand(context);
+        const resolvedCommand = await commands[i].resolveCommand(
+          context,
+          ResolveCommandType.runNew
+        );
         activeTerminal.sendText(resolvedCommand);
         activeTerminal.show();
       } else {
