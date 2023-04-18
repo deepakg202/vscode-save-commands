@@ -1,5 +1,4 @@
 import * as vscode from "vscode";
-import * as childProcess from "child_process";
 import TreeItem from "../TreeItem";
 import Command from "../models/command";
 import ReadableError from "../models/error";
