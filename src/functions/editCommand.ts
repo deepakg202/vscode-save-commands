@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { commandInput } from "../utils";
+import { CommandInputType, commandInput } from "../utils";
 import TreeItem from "../TreeItem";
 import Command, { COMMAND_STORAGE_KEY } from "../models/command";
 import { ExecCommands } from "../models/exec_commands";
@@ -25,7 +25,7 @@ export default function (context: vscode.ExtensionContext) {
       );
       const i = commands.findIndex((d: Command) => d.id === item.cmdId);
       if (i > -1) {
-        const val = await commandInput({
+        const val = await commandInput(CommandInputType.edit, {
           name: commands[i].name,
           cmd: commands[i].command,
         });

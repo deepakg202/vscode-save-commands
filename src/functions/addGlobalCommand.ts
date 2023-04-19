@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import { commandInput } from "../utils";
+import { CommandInputType, commandInput } from "../utils";
 import Command, { COMMAND_STORAGE_KEY } from "../models/command";
 import { ExecCommands } from "../models/exec_commands";
 
@@ -7,7 +7,7 @@ export default function (context: vscode.ExtensionContext) {
   return async () => {
     vscode.window.showWarningMessage("Add Global Command");
     try {
-      const val = await commandInput();
+      const val = await commandInput(CommandInputType.addGlobal);
       let c = Command.getGlobalCommands(context);
       // TODO: Can be refactored more
       const command = Command.create(val.name, val.cmd);

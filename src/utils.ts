@@ -6,6 +6,17 @@ enum Decision {
   no = "No",
 }
 
+enum InputFieldType {
+  label = "Label",
+  command = "Command",
+}
+
+export enum CommandInputType {
+  edit,
+  addGlobal,
+  addWorkspace = "Workspace",
+}
+
 export const singleInput = async (options: {
   promptText: string;
   placeholder: string;
@@ -27,19 +38,50 @@ export const singleInput = async (options: {
   }
 };
 
-export const commandInput = async (defaults?: {
-  name?: string;
-  cmd?: string;
-}) => {
+const getCommandInputTypeLabel = (
+  inputType: CommandInputType,
+  inputField: InputFieldType,
+  defaults?: {
+    name?: string;
+    cmd?: string;
+  }
+): string => {
+  switch (inputType) {
+    case CommandInputType.addGlobal:
+      return `ADD | Scope: Global | ${inputField}`;
+    case CommandInputType.addWorkspace:
+      return `ADD | Scope: Workspace | ${inputField}`;
+    case CommandInputType.edit:
+      return `EDIT | ${defaults?.name ?? ""} | ${inputField}`;
+    default:
+      return "";
+  }
+};
+
+export const commandInput = async (
+  inputType: CommandInputType,
+  defaults?: {
+    name?: string;
+    cmd?: string;
+  }
+) => {
   try {
     const name = (await vscode.window.showInputBox({
-      prompt: "Command Name",
-      placeHolder: "Command Name",
+      prompt: getCommandInputTypeLabel(
+        inputType,
+        InputFieldType.label,
+        defaults
+      ),
+      placeHolder: "Label",
       value: defaults?.name || undefined,
     })) as string;
     const cmd = (await vscode.window.showInputBox({
-      prompt: "Add Command",
-      placeHolder: "Command",
+      prompt: getCommandInputTypeLabel(
+        inputType,
+        InputFieldType.command,
+        defaults
+      ),
+      placeHolder: "Command Eg: `prog.sh -i {arg1} {arg2}`",
       value: defaults?.cmd || undefined,
     })) as string;
     if (!name.trim() || !cmd.trim()) {

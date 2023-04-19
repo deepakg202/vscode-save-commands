@@ -67,7 +67,7 @@ export default class Command {
     const inputs: Record<string, string> = {};
     for (let placeholder of placeholders) {
       const input = await takeSingleInput({
-        promptText: `${resolveCommandType} | ${this.name} `,
+        promptText: `${resolveCommandType} | ${this.name} | {${placeholder}} | `,
         placeholder: `Enter {${placeholder}}`,
       });
       inputs[placeholder] = input;
