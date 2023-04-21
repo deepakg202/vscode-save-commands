@@ -90,8 +90,8 @@
 				"title": "Try Running Command In Active Terminal",
 				"category": "Save Commands",
 				"icon": {
-					"light": "resources/light/run.svg",
-					"dark": "resources/dark/run.svg"
+					"light": "resources/light/run_active.svg",
+					"dark": "resources/dark/run_active.svg"
 				}
 			},
 			{
@@ -99,8 +99,8 @@
 				"title": "Copy Command to Clipboard",
 				"category": "Save Commands",
 				"icon": {
-					"light": "resources/light/files.svg",
-					"dark": "resources/dark/files.svg"
+					"light": "resources/light/copy.svg",
+					"dark": "resources/dark/copy.svg"
 				}
 			}
 		],
