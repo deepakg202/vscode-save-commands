@@ -3,20 +3,12 @@
 	"displayName": "Save Commands",
 	"description": "Simple VSCode Extension to save and execute terminal commands.",
 	"icon": "media/save-commands.png",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"engines": {
 		"vscode": "^1.69.x"
 	},
 	"categories": [
 		"Other"
-	],
-	"activationEvents": [
-		"onCommand:save-commands.addCommand",
-		"onCommand:save-commands.addGlobalCommand",
-		"onCommand:save-commands.deleteWorkspaceCommands",
-		"onCommand:save-commands.deleteGlobalCommands",
-		"onCommand:save-commands.reset",
-		"onView:save-commands-view"
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
@@ -94,12 +86,21 @@
 				}
 			},
 			{
+				"command": "save-commands.runCommandInActiveTerminal",
+				"title": "Try Running Command In Active Terminal",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/run_active.svg",
+					"dark": "resources/dark/run_active.svg"
+				}
+			},
+			{
 				"command": "save-commands.copyCommand",
 				"title": "Copy Command to Clipboard",
 				"category": "Save Commands",
 				"icon": {
-					"light": "resources/light/files.svg",
-					"dark": "resources/dark/files.svg"
+					"light": "resources/light/copy.svg",
+					"dark": "resources/dark/copy.svg"
 				}
 			}
 		],
@@ -127,6 +128,10 @@
 				},
 				{
 					"command": "save-commands.runCommand",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.runCommandInActiveTerminal",
 					"when": "false"
 				},
 				{
@@ -165,6 +170,11 @@
 				},
 				{
 					"command": "save-commands.runCommand",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+				},
+				{
+					"command": "save-commands.runCommandInActiveTerminal",
 					"group": "inline",
 					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
 				},
@@ -223,5 +233,9 @@
 		"url": "https://github.com/deepakgupta191199/vscode-save-commands"
 	},
 	"license": "MIT",
-	"publisher": "deepakgupta191199"
+	"publisher": "deepakgupta191199",
+	"dependencies": {
+		"class-transformer": "^0.5.1",
+		"reflect-metadata": "^0.1.13"
+	}
 }

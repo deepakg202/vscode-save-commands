@@ -1,20 +1,87 @@
 import * as vscode from "vscode";
+import ReadableError from "./models/error";
 
 enum Decision {
   yes = "Yes",
   no = "No",
 }
 
-export const commandInput = async (defaults?: any) => {
+enum InputFieldType {
+  label = "Label",
+  command = "Command",
+}
+
+export enum CommandInputType {
+  edit,
+  addGlobal,
+  addWorkspace = "Workspace",
+}
+
+export const singleInput = async (options: {
+  promptText: string;
+  placeholder: string;
+}): Promise<string> => {
+  const { promptText, placeholder } = options;
+  try {
+    const str = await vscode.window.showInputBox({
+      prompt: promptText,
+      placeHolder: placeholder,
+      value: "",
+    });
+
+    if (!str) {
+      throw new ReadableError("No Input Captured");
+    }
+    return str;
+  } catch (err) {
+    throw new ReadableError("Error taking input");
+  }
+};
+
+const getCommandInputTypeLabel = (
+  inputType: CommandInputType,
+  inputField: InputFieldType,
+  defaults?: {
+    name?: string;
+    cmd?: string;
+  }
+): string => {
+  switch (inputType) {
+    case CommandInputType.addGlobal:
+      return `ADD | Scope: Global | ${inputField}`;
+    case CommandInputType.addWorkspace:
+      return `ADD | Scope: Workspace | ${inputField}`;
+    case CommandInputType.edit:
+      return `EDIT | ${defaults?.name ?? ""} | ${inputField}`;
+    default:
+      return "";
+  }
+};
+
+export const commandInput = async (
+  inputType: CommandInputType,
+  defaults?: {
+    name?: string;
+    cmd?: string;
+  }
+) => {
   try {
     const name = (await vscode.window.showInputBox({
-      prompt: "Command Name",
-      placeHolder: "Command Name",
+      prompt: getCommandInputTypeLabel(
+        inputType,
+        InputFieldType.label,
+        defaults
+      ),
+      placeHolder: "Label",
       value: defaults?.name || undefined,
     })) as string;
     const cmd = (await vscode.window.showInputBox({
-      prompt: "Add Command",
-      placeHolder: "Command",
+      prompt: getCommandInputTypeLabel(
+        inputType,
+        InputFieldType.command,
+        defaults
+      ),
+      placeHolder: "Command Eg: `prog.sh -i {arg1} {arg2}`",
       value: defaults?.cmd || undefined,
     })) as string;
     if (!name.trim() || !cmd.trim()) {
@@ -27,7 +94,7 @@ export const commandInput = async (defaults?: any) => {
   }
 };
 
-export const uuidv4 = () => {
+export const uuidv4 = (): string => {
   return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
       v = c === "x" ? r : (r & 0x3) | 0x8;
@@ -57,7 +124,9 @@ export const confirmationDialog = (args: ConfirmationArgs) => {
       if (ans === Decision.yes) {
         args.onConfirm();
       } else {
-        if (args.onReject) {args.onReject();}
+        if (args.onReject) {
+          args.onReject();
+        }
       }
     });
 };
