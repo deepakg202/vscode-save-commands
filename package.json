@@ -5,7 +5,7 @@
 	"icon": "media/save-commands.png",
 	"version": "0.4.0",
 	"engines": {
-		"vscode": "^1.69.x"
+		"vscode": "^1.74.0"
 	},
 	"categories": [
 		"Other"
@@ -216,21 +216,21 @@
 		"@types/glob": "^7.2.0",
 		"@types/mocha": "^9.1.1",
 		"@types/node": "^18.6.4",
-		"@types/vscode": "^1.69.1",
+		"@types/vscode": "^1.74.0",
 		"@typescript-eslint/eslint-plugin": "^5.32.0",
 		"@typescript-eslint/parser": "^5.32.0",
 		"@vscode/test-electron": "^2.1.5",
 		"eslint": "^8.21.0",
 		"glob": "^8.0.3",
-		"mocha": "^10.0.0",
-		"ts-loader": "^9.3.1",
-		"typescript": "^4.7.4",
-		"webpack": "^5.74.0",
-		"webpack-cli": "^4.10.0"
+		"mocha": "^10.2.0",
+		"ts-loader": "^9.4.2",
+		"typescript": "^5.0.4",
+		"webpack": "^5.80.0",
+		"webpack-cli": "^5.0.2"
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/deepakgupta191199/vscode-save-commands"
+		"url": "https://github.com/deepakg202/vscode-save-commands"
 	},
 	"license": "MIT",
 	"publisher": "deepakgupta191199",
