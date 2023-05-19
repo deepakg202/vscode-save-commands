@@ -25,7 +25,7 @@ export default function (context: vscode.ExtensionContext) {
         // TODO: Come back later to this
         const resolvedCommand = await commands[i].resolveCommand(
           context,
-          ResolveCommandType.runNew
+          ResolveCommandType.runActive
         );
         activeTerminal.sendText(resolvedCommand);
         activeTerminal.show();

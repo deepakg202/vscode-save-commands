@@ -1,5 +1,7 @@
 import * as vscode from "vscode";
 import ReadableError from "./models/error";
+import Command from "./models/command";
+import { PlaceholderType } from "./models/placeholder_types";
 
 enum Decision {
   yes = "Yes",
@@ -63,9 +65,13 @@ export const commandInput = async (
   defaults?: {
     name?: string;
     cmd?: string;
+    placeholderType?: PlaceholderType;
   }
-) => {
+): Promise<Command> => {
   try {
+    const activePlaceholderType =
+      defaults?.placeholderType ?? PlaceholderType.getActivePlaceholderType();
+
     const name = (await vscode.window.showInputBox({
       prompt: getCommandInputTypeLabel(
         inputType,
@@ -75,19 +81,29 @@ export const commandInput = async (
       placeHolder: "Label",
       value: defaults?.name || undefined,
     })) as string;
+    const cmdPlaceholderLabel = `Command Eg: \`prog.sh -i ${activePlaceholderType.wrapLabel(
+      "arg1"
+    )} ${activePlaceholderType.wrapLabel("arg2")}\``;
+
+    let cmdInputLabel = getCommandInputTypeLabel(
+      inputType,
+      InputFieldType.command,
+      defaults
+    );
+
+    cmdInputLabel += ` | ${activePlaceholderType.id}`;
+
     const cmd = (await vscode.window.showInputBox({
-      prompt: getCommandInputTypeLabel(
-        inputType,
-        InputFieldType.command,
-        defaults
-      ),
-      placeHolder: "Command Eg: `prog.sh -i {arg1} {arg2}`",
+      prompt: cmdInputLabel,
+      placeHolder: cmdPlaceholderLabel,
       value: defaults?.cmd || undefined,
     })) as string;
     if (!name.trim() || !cmd.trim()) {
       throw new Error("Bad Input");
     }
-    return Promise.resolve({ name: name.trim(), cmd: cmd.trim() });
+    return Promise.resolve(
+      Command.create(name.trim(), cmd.trim(), activePlaceholderType)
+    );
   } catch (err) {
     console.log("Error Adding Command");
     return Promise.reject(err);

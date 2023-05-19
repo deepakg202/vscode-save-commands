@@ -7,11 +7,9 @@ export default function (context: vscode.ExtensionContext) {
   return async () => {
     vscode.window.showWarningMessage("Add Global Command");
     try {
-      const val = await commandInput(CommandInputType.addGlobal);
+      const newCommand = await commandInput(CommandInputType.addGlobal);
       let c = Command.getGlobalCommands(context);
-      // TODO: Can be refactored more
-      const command = Command.create(val.name, val.cmd);
-      c.push(command);
+      c.push(newCommand);
       context.globalState.update(COMMAND_STORAGE_KEY, c);
       context.globalState.setKeysForSync([COMMAND_STORAGE_KEY]);
       vscode.window.showInformationMessage("Added Global Command Successfully");

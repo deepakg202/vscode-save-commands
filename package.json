@@ -3,7 +3,7 @@
 	"displayName": "Save Commands",
 	"description": "Simple VSCode Extension to save and execute terminal commands.",
 	"icon": "media/save-commands.png",
-	"version": "0.4.1",
+	"version": "0.5.0",
 	"engines": {
 		"vscode": "^1.74.0"
 	},
@@ -12,6 +12,28 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "Save Commands",
+			"properties": {
+				"save-commands.placeholderType": {
+					"type": "string",
+					"default": "doubleCurlyBraces",
+					"enum": [
+						"singleCurlyBraces",
+						"doubleCurlyBraces",
+						"singleAngleBraces",
+						"doubleAngleBraces"
+					],
+					"description": "Set placeholder string type. This will be used to detect placeholders in your commands. This won't affect your existing commands",
+					"enumDescriptions": [
+						"{name}",
+						"{{name}}",
+						"<name>",
+						"<<name>>"
+					]
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "save-commands.refreshView",

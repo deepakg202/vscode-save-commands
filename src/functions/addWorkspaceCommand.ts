@@ -7,10 +7,9 @@ export default function (context: vscode.ExtensionContext) {
   return async () => {
     vscode.window.showWarningMessage("Add Workspace Command");
     try {
-      const val = await commandInput(CommandInputType.addWorkspace);
+      const newCommand = await commandInput(CommandInputType.addWorkspace);
       let c = Command.getWorkspaceCommands(context);
-      const command = Command.create(val.name, val.cmd);
-      c.push(command);
+      c.push(newCommand);
       context.workspaceState.update(COMMAND_STORAGE_KEY, c);
       vscode.window.showInformationMessage(
         "Added Workspace Command Successfully"

@@ -1,6 +1,7 @@
 import { plainToClass } from "class-transformer";
 import { singleInput as takeSingleInput, uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
+import { PlaceholderType } from "./placeholder_types";
 export const COMMAND_STORAGE_KEY = "commands";
 
 export const enum ResolveCommandType {
@@ -13,16 +14,34 @@ export default class Command {
   id: string;
   name: string;
   command: string;
+  placeholderTypeId: string;
 
-  constructor(id: string, name: string, command: string) {
+  constructor(
+    id: string,
+    name: string,
+    command: string,
+    placeholderTypeId: string
+  ) {
     this.id = id;
     this.name = name;
     this.command = command;
+    this.placeholderTypeId = placeholderTypeId;
   }
 
-  static create(name: string, command: string) {
+  getPlaceholderType(): PlaceholderType {
+    return (
+      PlaceholderType.getPlaceholderTypeFromId(this.placeholderTypeId) ??
+      PlaceholderType.fallbackPlaceholderType
+    );
+  }
+
+  static create(
+    name: string,
+    command: string,
+    placeholderType: PlaceholderType
+  ) {
     const id = uuidv4();
-    return new Command(id, name, command);
+    return new Command(id, name, command, placeholderType.id);
   }
 
   toJson(): Record<string, string> {
@@ -30,6 +49,7 @@ export default class Command {
       id: this.id,
       name: this.name,
       command: this.command,
+      placeholderTypeId: this.placeholderTypeId,
     };
   }
 
@@ -37,7 +57,8 @@ export default class Command {
     return new Command(
       json["id"] as string,
       json["name"] as string,
-      json["command"] as string
+      json["command"] as string,
+      json["placeholderTypeId"] as string
     );
   }
 
@@ -56,7 +77,8 @@ export default class Command {
     context: ExtensionContext,
     resolveCommandType: ResolveCommandType
   ): Promise<string> {
-    const regex = /{([^}]+)}/g;
+    const placeholderType = this.getPlaceholderType();
+    const regex = placeholderType.regex;
     const matches = this.command.match(regex);
     if (!matches) {
       return this.command;
@@ -67,8 +89,8 @@ export default class Command {
     const inputs: Record<string, string> = {};
     for (let placeholder of placeholders) {
       const input = await takeSingleInput({
-        promptText: `${resolveCommandType} | ${this.name} | {${placeholder}} | `,
-        placeholder: `Enter {${placeholder}}`,
+        promptText: `${resolveCommandType} | ${this.name} | ${placeholder} | `,
+        placeholder: `Enter ${placeholder}`,
       });
       inputs[placeholder] = input;
     }
