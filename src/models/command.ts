@@ -77,7 +77,8 @@ export default class Command {
     context: ExtensionContext,
     resolveCommandType: ResolveCommandType
   ): Promise<string> {
-    const regex = /{([^}]+)}/g;
+    const placeholderType = this.getPlaceholderType();
+    const regex = placeholderType.regex;
     const matches = this.command.match(regex);
     if (!matches) {
       return this.command;
@@ -88,8 +89,8 @@ export default class Command {
     const inputs: Record<string, string> = {};
     for (let placeholder of placeholders) {
       const input = await takeSingleInput({
-        promptText: `${resolveCommandType} | ${this.name} | {${placeholder}} | `,
-        placeholder: `Enter {${placeholder}}`,
+        promptText: `${resolveCommandType} | ${this.name} | ${placeholder} | `,
+        placeholder: `Enter ${placeholder}`,
       });
       inputs[placeholder] = input;
     }

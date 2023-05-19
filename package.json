@@ -19,21 +19,17 @@
 					"type": "string",
 					"default": "doubleCurlyBraces",
 					"enum": [
-						"doubleCurlyBraces",
 						"singleCurlyBraces",
-						"doubleAngleBraces",
+						"doubleCurlyBraces",
 						"singleAngleBraces",
-						"doubleSquareBraces",
-						"singleSquareBraces"
+						"doubleAngleBraces"
 					],
-					"description": "Set placeholder string type. This will be used to detect placeholders in your commands",
+					"description": "Set placeholder string type. This will be used to detect placeholders in your commands. This won't affect your existing commands",
 					"enumDescriptions": [
-						"{{label}}",
 						"{label}",
+						"{{label}}",
 						"<label>",
-						"<<label>>",
-						"[label]",
-						"[[label]]"
+						"<<label>>"
 					]
 				}
 			}

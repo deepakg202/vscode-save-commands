@@ -1,5 +1,8 @@
 import * as vscode from "vscode";
 class SingleCurlyBracesPlaceholderType implements PlaceholderType {
+  wrapLabel(label: string): string {
+    return `{${label}}`;
+  }
   get id(): string {
     return "singleCurlyBraces";
   }
@@ -9,6 +12,9 @@ class SingleCurlyBracesPlaceholderType implements PlaceholderType {
 }
 
 class DoubleCurlyBracesPlaceholderType implements PlaceholderType {
+  wrapLabel(label: string): string {
+    return `{{${label}}}`;
+  }
   get id(): string {
     return "doubleCurlyBraces";
   }
@@ -18,38 +24,26 @@ class DoubleCurlyBracesPlaceholderType implements PlaceholderType {
 }
 
 class SingleAngleBracesPlaceholderType implements PlaceholderType {
+  wrapLabel(label: string): string {
+    return `<${label}>`;
+  }
   get id(): string {
     return "singleAngleBraces";
   }
   get regex(): RegExp {
-    throw new Error("Method not implemented.");
+    return /<([^>]+)>/g;
   }
 }
 
 class DoubleAngleBracesPlaceholderType implements PlaceholderType {
+  wrapLabel(label: string): string {
+    return `<<${label}>>`;
+  }
   get id(): string {
     return "doubleAngleBraces";
   }
   get regex(): RegExp {
-    throw new Error("Method not implemented.");
-  }
-}
-
-class SingleSquareBracesPlaceholderType implements PlaceholderType {
-  get id(): string {
-    return "singleSquareBraces";
-  }
-  get regex(): RegExp {
-    throw new Error("Method not implemented.");
-  }
-}
-
-class DoubleSquareBracesPlaceholderType implements PlaceholderType {
-  get id(): string {
-    return "doubleSquareBraces";
-  }
-  get regex(): RegExp {
-    throw new Error("Method not implemented.");
+    return /<<([^>>]+)>>/g;
   }
 }
 
@@ -57,13 +51,13 @@ export abstract class PlaceholderType {
   abstract get id(): string;
   abstract get regex(): RegExp;
 
+  abstract wrapLabel(label: string): string;
+
   static all: Array<PlaceholderType> = [
     new SingleCurlyBracesPlaceholderType(),
     new DoubleCurlyBracesPlaceholderType(),
     new SingleAngleBracesPlaceholderType(),
     new DoubleAngleBracesPlaceholderType(),
-    new SingleSquareBracesPlaceholderType(),
-    new DoubleSquareBracesPlaceholderType(),
   ];
 
   static fallbackPlaceholderType = new SingleCurlyBracesPlaceholderType();

@@ -28,6 +28,7 @@ export default function (context: vscode.ExtensionContext) {
         const val = await commandInput(CommandInputType.edit, {
           name: commands[i].name,
           cmd: commands[i].command,
+          placeholderType: commands[i].getPlaceholderType()
         });
         commands[i].name = val.name;
         commands[i].command = val.command;

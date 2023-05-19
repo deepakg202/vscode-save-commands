@@ -71,6 +71,7 @@ export const commandInput = async (
   try {
     const activePlaceholderType =
       defaults?.placeholderType ?? PlaceholderType.getActivePlaceholderType();
+
     const name = (await vscode.window.showInputBox({
       prompt: getCommandInputTypeLabel(
         inputType,
@@ -80,13 +81,21 @@ export const commandInput = async (
       placeHolder: "Label",
       value: defaults?.name || undefined,
     })) as string;
+    const cmdPlaceholderLabel = `Command Eg: \`prog.sh -i ${activePlaceholderType.wrapLabel(
+      "arg1"
+    )} ${activePlaceholderType.wrapLabel("arg2")}\``;
+
+    let cmdInputLabel = getCommandInputTypeLabel(
+      inputType,
+      InputFieldType.command,
+      defaults
+    );
+
+    cmdInputLabel += ` | ${activePlaceholderType.id}`;
+
     const cmd = (await vscode.window.showInputBox({
-      prompt: getCommandInputTypeLabel(
-        inputType,
-        InputFieldType.command,
-        defaults
-      ),
-      placeHolder: "Command Eg: `prog.sh -i {arg1} {arg2}`",
+      prompt: cmdInputLabel,
+      placeHolder: cmdPlaceholderLabel,
       value: defaults?.cmd || undefined,
     })) as string;
     if (!name.trim() || !cmd.trim()) {
