@@ -2,8 +2,12 @@
 
 All notable changes to the "save-commands" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [0.5.0]
+- Add setting to change placeholder capturing group
 
-## [Unreleased]
+## [0.4.1]
+- Add Placeholder
+
+## [0.0.1]
 
 - Initial release
