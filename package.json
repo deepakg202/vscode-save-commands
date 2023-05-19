@@ -26,10 +26,10 @@
 					],
 					"description": "Set placeholder string type. This will be used to detect placeholders in your commands. This won't affect your existing commands",
 					"enumDescriptions": [
-						"{label}",
-						"{{label}}",
-						"<label>",
-						"<<label>>"
+						"{name}",
+						"{{name}}",
+						"<name>",
+						"<<name>>"
 					]
 				}
 			}

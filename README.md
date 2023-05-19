@@ -12,7 +12,7 @@ Now you can add placeholders in your commands. For eg, you can add commands in t
 `This is {placeholder1} and {placeholder2} with {placeholder1} again`
 It will ask input for `placeholder1` and `placeholder2`
 
-You can change the capturing group in settings
+You can set `save-commands.placeholderType` to change the capturing group in settings.
 
 ---
 
