@@ -12,6 +12,32 @@
 	],
 	"main": "./dist/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "Save Commands",
+			"properties": {
+				"save-commands.placeholderType": {
+					"type": "string",
+					"default": "doubleCurlyBraces",
+					"enum": [
+						"doubleCurlyBraces",
+						"singleCurlyBraces",
+						"doubleAngleBraces",
+						"singleAngleBraces",
+						"doubleSquareBraces",
+						"singleSquareBraces"
+					],
+					"description": "Set placeholder string type. This will be used to detect placeholders in your commands",
+					"enumDescriptions": [
+						"{{label}}",
+						"{label}",
+						"<label>",
+						"<<label>>",
+						"[label]",
+						"[[label]]"
+					]
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "save-commands.refreshView",

@@ -1,6 +1,7 @@
 import { plainToClass } from "class-transformer";
 import { singleInput as takeSingleInput, uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
+import { PlaceholderType } from "./placeholder_types";
 export const COMMAND_STORAGE_KEY = "commands";
 
 export const enum ResolveCommandType {
@@ -13,16 +14,34 @@ export default class Command {
   id: string;
   name: string;
   command: string;
+  placeholderTypeId: string;
 
-  constructor(id: string, name: string, command: string) {
+  constructor(
+    id: string,
+    name: string,
+    command: string,
+    placeholderTypeId: string
+  ) {
     this.id = id;
     this.name = name;
     this.command = command;
+    this.placeholderTypeId = placeholderTypeId;
   }
 
-  static create(name: string, command: string) {
+  getPlaceholderType(): PlaceholderType {
+    return (
+      PlaceholderType.getPlaceholderTypeFromId(this.placeholderTypeId) ??
+      PlaceholderType.fallbackPlaceholderType
+    );
+  }
+
+  static create(
+    name: string,
+    command: string,
+    placeholderType: PlaceholderType
+  ) {
     const id = uuidv4();
-    return new Command(id, name, command);
+    return new Command(id, name, command, placeholderType.id);
   }
 
   toJson(): Record<string, string> {
@@ -30,6 +49,7 @@ export default class Command {
       id: this.id,
       name: this.name,
       command: this.command,
+      placeholderTypeId: this.placeholderTypeId,
     };
   }
 
@@ -37,7 +57,8 @@ export default class Command {
     return new Command(
       json["id"] as string,
       json["name"] as string,
-      json["command"] as string
+      json["command"] as string,
+      json["placeholderTypeId"] as string
     );
   }
 

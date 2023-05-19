@@ -30,7 +30,7 @@ export default function (context: vscode.ExtensionContext) {
           cmd: commands[i].command,
         });
         commands[i].name = val.name;
-        commands[i].command = val.cmd;
+        commands[i].command = val.command;
         if (item.contextValue === "child-workspace") {
           context.workspaceState.update(COMMAND_STORAGE_KEY, commands);
         } else if (item.contextValue === "child-global") {
