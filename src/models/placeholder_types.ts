@@ -1,5 +1,19 @@
-import * as vscode from "vscode";
-class SingleCurlyBracesPlaceholderType implements PlaceholderType {
+export abstract class PlaceholderType {
+  abstract get id(): string;
+  abstract get regex(): RegExp;
+
+  abstract wrapLabel(label: string): string;
+
+  extractPlaceholders = (str: string): Array<string> | null => {
+    return str.match(this.regex);
+  };
+
+  static getPlaceholderTypeFromId(id: string) {
+    return ALL_PLACEHOLDERS.find((i) => i.id === id);
+  }
+}
+
+export class SingleCurlyBracesPlaceholderType extends PlaceholderType {
   wrapLabel(label: string): string {
     return `{${label}}`;
   }
@@ -11,7 +25,7 @@ class SingleCurlyBracesPlaceholderType implements PlaceholderType {
   }
 }
 
-class DoubleCurlyBracesPlaceholderType implements PlaceholderType {
+class DoubleCurlyBracesPlaceholderType extends PlaceholderType {
   wrapLabel(label: string): string {
     return `{{${label}}}`;
   }
@@ -23,7 +37,7 @@ class DoubleCurlyBracesPlaceholderType implements PlaceholderType {
   }
 }
 
-class SingleAngleBracesPlaceholderType implements PlaceholderType {
+class SingleAngleBracesPlaceholderType extends PlaceholderType {
   wrapLabel(label: string): string {
     return `<${label}>`;
   }
@@ -35,7 +49,7 @@ class SingleAngleBracesPlaceholderType implements PlaceholderType {
   }
 }
 
-class DoubleAngleBracesPlaceholderType implements PlaceholderType {
+class DoubleAngleBracesPlaceholderType extends PlaceholderType {
   wrapLabel(label: string): string {
     return `<<${label}>>`;
   }
@@ -47,31 +61,11 @@ class DoubleAngleBracesPlaceholderType implements PlaceholderType {
   }
 }
 
-export abstract class PlaceholderType {
-  abstract get id(): string;
-  abstract get regex(): RegExp;
+export const ALL_PLACEHOLDERS = [
+  new SingleCurlyBracesPlaceholderType(),
+  new DoubleCurlyBracesPlaceholderType(),
+  new SingleAngleBracesPlaceholderType(),
+  new DoubleAngleBracesPlaceholderType(),
+];
 
-  abstract wrapLabel(label: string): string;
-
-  static all: Array<PlaceholderType> = [
-    new SingleCurlyBracesPlaceholderType(),
-    new DoubleCurlyBracesPlaceholderType(),
-    new SingleAngleBracesPlaceholderType(),
-    new DoubleAngleBracesPlaceholderType(),
-  ];
-
-  static fallbackPlaceholderType = new SingleCurlyBracesPlaceholderType();
-
-  static getPlaceholderTypeFromId(id: string) {
-    return this.all.find((i) => i.id === id);
-  }
-
-  static getActivePlaceholderType(): PlaceholderType {
-    const config = vscode.workspace.getConfiguration("save-commands");
-
-    return (
-      this.all.find((i) => i.id === config.get("placeholderType")) ??
-      this.all[2]
-    );
-  }
-}
+export const FALLBACK_PLACEHOLDER_TYPE = new SingleCurlyBracesPlaceholderType();

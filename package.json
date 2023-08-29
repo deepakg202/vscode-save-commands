@@ -3,7 +3,7 @@
 	"displayName": "Save Commands",
 	"description": "Simple VSCode Extension to save and execute terminal commands.",
 	"icon": "media/save-commands.png",
-	"version": "0.5.0",
+	"version": "0.5.1",
 	"engines": {
 		"vscode": "^1.74.0"
 	},
@@ -232,7 +232,8 @@
 		"test-watch": "tsc -watch -p ./",
 		"pretest": "yarn run test-compile && yarn run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"unit-test": "mocha"
 	},
 	"devDependencies": {
 		"@types/glob": "^7.2.0",
@@ -246,7 +247,9 @@
 		"glob": "^8.0.3",
 		"mocha": "^10.2.0",
 		"ts-loader": "^9.4.2",
+		"ts-node": "^10.9.1",
 		"typescript": "^5.0.4",
+		"vscode-test": "^1.6.1",
 		"webpack": "^5.80.0",
 		"webpack-cli": "^5.0.2"
 	},

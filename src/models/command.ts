@@ -1,7 +1,10 @@
 import { plainToClass } from "class-transformer";
 import { singleInput as takeSingleInput, uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
-import { PlaceholderType } from "./placeholder_types";
+import {
+  FALLBACK_PLACEHOLDER_TYPE,
+  PlaceholderType,
+} from "./placeholder_types";
 export const COMMAND_STORAGE_KEY = "commands";
 
 export const enum ResolveCommandType {
@@ -31,7 +34,7 @@ export default class Command {
   getPlaceholderType(): PlaceholderType {
     return (
       PlaceholderType.getPlaceholderTypeFromId(this.placeholderTypeId) ??
-      PlaceholderType.fallbackPlaceholderType
+      FALLBACK_PLACEHOLDER_TYPE
     );
   }
 
@@ -79,30 +82,25 @@ export default class Command {
   ): Promise<string> {
     const placeholderType = this.getPlaceholderType();
     const regex = placeholderType.regex;
-    const matches = this.command.match(regex);
+    const matches = placeholderType.extractPlaceholders(this.command);
     if (!matches) {
       return this.command;
     }
-    const placeholders = matches.map((match) =>
-      match.substring(1, match.length - 1)
-    );
+
     const inputs: Record<string, string> = {};
-    for (let placeholder of placeholders) {
+    for (let placeholder of matches) {
       const input = await takeSingleInput({
         promptText: `${resolveCommandType} | ${this.name} | ${placeholder} | `,
         placeholder: `Enter ${placeholder}`,
       });
       inputs[placeholder] = input;
     }
-    const resolvedCommand = this.command.replace(
-      regex,
-      (match, placeholder) => {
-        if (placeholder in inputs) {
-          return inputs[placeholder];
-        }
-        return match;
+    const resolvedCommand = this.command.replace(regex, (match) => {
+      if (match in inputs) {
+        return inputs[match];
       }
-    );
+      return match;
+    });
 
     return resolvedCommand;
   }

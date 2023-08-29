@@ -1,7 +1,11 @@
 import * as vscode from "vscode";
 import ReadableError from "./models/error";
 import Command from "./models/command";
-import { PlaceholderType } from "./models/placeholder_types";
+import {
+  ALL_PLACEHOLDERS,
+  FALLBACK_PLACEHOLDER_TYPE,
+  PlaceholderType,
+} from "./models/placeholder_types";
 
 enum Decision {
   yes = "Yes",
@@ -70,7 +74,7 @@ export const commandInput = async (
 ): Promise<Command> => {
   try {
     const activePlaceholderType =
-      defaults?.placeholderType ?? PlaceholderType.getActivePlaceholderType();
+      defaults?.placeholderType ?? getActivePlaceholderType();
 
     const name = (await vscode.window.showInputBox({
       prompt: getCommandInputTypeLabel(
@@ -152,3 +156,12 @@ interface ConfirmationArgs {
   onReject?: Function;
   message?: string;
 }
+
+export const getActivePlaceholderType = (): PlaceholderType => {
+  const config = vscode.workspace.getConfiguration("save-commands");
+
+  return (
+    ALL_PLACEHOLDERS.find((i) => i.id === config.get("placeholderType")) ??
+    FALLBACK_PLACEHOLDER_TYPE
+  );
+};
