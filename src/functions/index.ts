@@ -11,4 +11,17 @@ import runCommandFn from "./runCommand";
 import addGlobalFolderFn from "./addGlobalFolder";
 import addWorkspaceFolderFn from "./addWorkspaceFolder";
 
-export { addGlobalCommandFn, addCommandFn, deleteCommandFn, deleteWorkspaceCommands, resetFn, editCommandFn, deleteGlobalCommands, copyCommandFn, runCommandInActiveTerminalFn, runCommandFn, addGlobalFolderFn, addWorkspaceFolderFn };
+export {
+	addGlobalCommandFn,
+	addCommandFn,
+	deleteCommandFn,
+	deleteWorkspaceCommands,
+	resetFn,
+	editCommandFn,
+	deleteGlobalCommands,
+	copyCommandFn,
+	runCommandInActiveTerminalFn,
+	runCommandFn,
+	addGlobalFolderFn,
+	addWorkspaceFolderFn,
+};

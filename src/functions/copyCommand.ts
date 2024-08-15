@@ -1,5 +1,5 @@
 import * as vscode from "vscode";
-import TreeItem from "../TreeItem";
+import type TreeItem from "../TreeItem";
 import Command, { ResolveCommandType } from "../models/command";
 import ReadableError from "../models/error";
 
