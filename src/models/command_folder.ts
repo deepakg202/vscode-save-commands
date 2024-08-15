@@ -1,33 +1,21 @@
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { uuidv4 } from "../utils";
 import type { ExtensionContext } from "vscode";
-import type { JSONObj } from "./base_types";
+import type { JSONObj, PickProperties } from "./base_types";
 export const COMMAND_FOLDERS_STORAGE_KEY = "command_folders";
 
 export class CommandFolder {
-	id: string;
-	name: string;
+	id!: string;
+	name!: string;
 	parentPath?: string | undefined;
 	sortOrder?: number;
-
-	constructor(fields: {
-		id: string;
-		name: string;
-		parentPath?: string;
-		sortOrder?: number;
-	}) {
-		this.id = fields.id;
-		this.name = fields.name;
-		this.sortOrder = fields.sortOrder;
-		this.parentPath = fields.parentPath;
-	}
 
 	static create(fields: {
 		name: string;
 		parentPath?: string;
 		sortOrder?: number;
 	}) {
-		return new CommandFolder({
+		return CommandFolder.fromJson({
 			id: uuidv4(),
 			name: fields.name,
 			parentPath: fields.parentPath,
@@ -37,6 +25,10 @@ export class CommandFolder {
 
 	static fromJson(json: JSONObj): CommandFolder {
 		return plainToInstance(CommandFolder, json);
+	}
+
+	static fromJsonSafe(json: PickProperties<CommandFolder>): CommandFolder {
+		return CommandFolder.fromJson(json);
 	}
 
 	toJson(): JSONObj {
