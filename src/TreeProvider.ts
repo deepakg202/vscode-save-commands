@@ -21,20 +21,22 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
       this.context
     );
 
+    const globalBasePath = "child-global";
     const globalTreeItems: Array<TreeItem> =
       global.length !== 0
         ? global.map(
-            (d) => new TreeItem(d.id, d.name, d.command, "child-global")
-          )
+          (d) => new TreeItem(d.id, d.name, d.command, globalBasePath)
+        )
         : [new TreeItem(null, "No Commands Found")];
 
+    const workspaceBasePath = "child-workspace";
     const workspaceTreeItems: Array<TreeItem> =
       workspace.length !== 0
         ? workspace.map(
-            (d) => new TreeItem(d.id, d.name, d.command, "child-workspace")
-          )
+          (d) => new TreeItem(d.id, d.name, d.command, workspaceBasePath)
+        )
         : [new TreeItem(null, "No Commands Found")];
-        
+
     this.data = [
       new TreeItem(
         null,

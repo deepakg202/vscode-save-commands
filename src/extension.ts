@@ -1,17 +1,8 @@
 import * as vscode from "vscode";
 import TreeDataProvider from "./TreeProvider";
-import addCommandFn from "./functions/addWorkspaceCommand";
-import addGlobalCommandFn from "./functions/addGlobalCommand";
-import deleteWorkspaceCommands from "./functions/deleteWorkspaceCommands";
-import deleteGlobalCommands from "./functions/deleteGlobalCommands";
-import deleteCommandFn from "./functions/deleteCommand";
-import editCommandFn from "./functions/editCommand";
-import resetFn from "./functions/reset";
-import copyCommandFn from "./functions/copyCommand";
 import { ExecCommands } from "./models/exec_commands";
-import runCommandInActiveTerminalFn from "./functions/runCommandInActiveTerminal";
-import runCommandFn from "./functions/runCommand";
 import "reflect-metadata";
+import { addCommandFn, addGlobalCommandFn, addGlobalFolderFn, addWorkspaceFolderFn, copyCommandFn, deleteCommandFn, deleteGlobalCommands, deleteWorkspaceCommands, editCommandFn, resetFn, runCommandFn, runCommandInActiveTerminalFn } from "./functions";
 
 export function activate(context: vscode.ExtensionContext) {
   const treeView = new TreeDataProvider(context);
@@ -67,6 +58,16 @@ export function activate(context: vscode.ExtensionContext) {
     () => treeView.refresh()
   );
 
+  const addGlobalFolder = vscode.commands.registerCommand(
+    ExecCommands.addGlobalFolder,
+    addGlobalFolderFn(context)
+  );
+
+  const addWorkspaceFolder = vscode.commands.registerCommand(
+    ExecCommands.addWorkspaceFolder,
+    addWorkspaceFolderFn(context)
+  );
+
   vscode.window.registerTreeDataProvider("save-commands-view", treeView);
   context.subscriptions.push(
     addCommand,
@@ -79,9 +80,11 @@ export function activate(context: vscode.ExtensionContext) {
     copyCommand,
     editCommand,
     refreshView,
-    reset
+    reset,
+    addWorkspaceFolder,
+    addGlobalFolder,
   );
 }
 
 // this method is called when your extension is deactivated
-export function deactivate() {}
+export function deactivate() { }

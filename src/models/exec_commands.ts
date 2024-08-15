@@ -10,4 +10,6 @@ export const enum ExecCommands {
   runCommandInActiveTerminal = "save-commands.runCommandInActiveTerminal",
   reset = "save-commands.reset",
   refreshView = "save-commands.refreshView",
+  addGlobalFolder = "save-commands.addGlobalFolder",
+  addWorkspaceFolder = "save-commands.addWorkspaceFolder",
 }

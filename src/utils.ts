@@ -6,6 +6,7 @@ import {
   FALLBACK_PLACEHOLDER_TYPE,
   PlaceholderType,
 } from "./models/placeholder_types";
+import { CommandFolder } from "./models/command_folder";
 
 enum Decision {
   yes = "Yes",
@@ -164,4 +165,29 @@ export const getActivePlaceholderType = (): PlaceholderType => {
     ALL_PLACEHOLDERS.find((i) => i.id === config.get("placeholderType")) ??
     FALLBACK_PLACEHOLDER_TYPE
   );
+};
+
+
+export const commandFolderInput = async (
+  defaults?: {
+    name?: string;
+    parentPath?: string;
+    sortOrder?: number;
+  }
+): Promise<CommandFolder> => {
+  try {
+
+    const name = (await vscode.window.showInputBox({
+      prompt: "Add Folder",
+      placeHolder: "Folder Name",
+      value: defaults?.name || undefined,
+    })) as string;
+
+    return Promise.resolve(
+      CommandFolder.create({ name: name, parentPath: defaults?.parentPath, sortOrder: defaults?.sortOrder })
+    );
+  } catch (err) {
+    console.log("Error Creating Folder");
+    return Promise.reject(err);
+  }
 };

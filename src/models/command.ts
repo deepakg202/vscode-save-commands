@@ -1,10 +1,11 @@
-import { plainToClass } from "class-transformer";
+import { instanceToPlain, plainToInstance } from "class-transformer";
 import { singleInput as takeSingleInput, uuidv4 } from "../utils";
 import { ExtensionContext } from "vscode";
 import {
   FALLBACK_PLACEHOLDER_TYPE,
   PlaceholderType,
 } from "./placeholder_types";
+import { JSONObj, PickProperties } from "./base_types";
 export const COMMAND_STORAGE_KEY = "commands";
 
 export const enum ResolveCommandType {
@@ -14,22 +15,12 @@ export const enum ResolveCommandType {
 }
 
 export default class Command {
-  id: string;
-  name: string;
-  command: string;
-  placeholderTypeId: string;
-
-  constructor(
-    id: string,
-    name: string,
-    command: string,
-    placeholderTypeId: string
-  ) {
-    this.id = id;
-    this.name = name;
-    this.command = command;
-    this.placeholderTypeId = placeholderTypeId;
-  }
+  id!: string;
+  name!: string;
+  command!: string;
+  placeholderTypeId!: string;
+  path?: string;
+  sortOrder?: number;
 
   getPlaceholderType(): PlaceholderType {
     return (
@@ -41,44 +32,45 @@ export default class Command {
   static create(
     name: string,
     command: string,
-    placeholderType: PlaceholderType
+    placeholderType: PlaceholderType,
   ) {
     const id = uuidv4();
-    return new Command(id, name, command, placeholderType.id);
+    return this.fromJsonSafe({
+      id,
+      name,
+      command,
+      placeholderTypeId: placeholderType.id,
+      sortOrder: 0,
+      path: "",
+    });
   }
 
-  toJson(): Record<string, string> {
-    return {
-      id: this.id,
-      name: this.name,
-      command: this.command,
-      placeholderTypeId: this.placeholderTypeId,
-    };
+  toJson(): JSONObj {
+    return instanceToPlain(this);
   }
 
-  fromJson(json: Record<string, unknown>): Command {
-    return new Command(
-      json["id"] as string,
-      json["name"] as string,
-      json["command"] as string,
-      json["placeholderTypeId"] as string
-    );
+  static fromJson(json: JSONObj): Command {
+    return plainToInstance(Command, json);
+  }
+
+  static fromJsonSafe(json: PickProperties<Command>): Command {
+    return this.fromJson(json);
   }
 
   static getWorkspaceCommands(context: ExtensionContext): Array<Command> {
-    const commands = (context.workspaceState.get(COMMAND_STORAGE_KEY) ??
-      []) as Array<object>;
-    return commands.map((value) => plainToClass(Command, value));
+    const commands =
+      context.workspaceState.get<Array<JSONObj>>(COMMAND_STORAGE_KEY) ?? [];
+    return commands.map((value) => Command.fromJson(value));
   }
   static getGlobalCommands(context: ExtensionContext): Array<Command> {
-    const commands = (context.globalState.get(COMMAND_STORAGE_KEY) ??
-      []) as Array<object>;
-    return commands.map((value) => plainToClass(Command, value));
+    const commands =
+      context.globalState.get<Array<JSONObj>>(COMMAND_STORAGE_KEY) ?? [];
+    return commands.map((value) => Command.fromJson(value));
   }
 
   async resolveCommand(
     context: ExtensionContext,
-    resolveCommandType: ResolveCommandType
+    resolveCommandType: ResolveCommandType,
   ): Promise<string> {
     const placeholderType = this.getPlaceholderType();
     const regex = placeholderType.regex;
