@@ -18,7 +18,7 @@ export default function (context: vscode.ExtensionContext) {
 			context.globalState.update(COMMAND_FOLDERS_STORAGE_KEY, c);
 
 			vscode.window.showInformationMessage(
-				"Added Workspace Folder Successfully",
+				"Added Global Folder Successfully",
 			);
 			vscode.commands.executeCommand(ExecCommands.refreshView);
 		} catch (er) {

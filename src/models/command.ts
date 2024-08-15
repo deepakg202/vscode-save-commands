@@ -19,8 +19,8 @@ export default class Command {
 	name!: string;
 	command!: string;
 	placeholderTypeId!: string;
-	path?: string;
 	sortOrder?: number;
+	folderIds?: Array<string>;
 
 	getPlaceholderType(): PlaceholderType {
 		return (
@@ -41,7 +41,7 @@ export default class Command {
 			command,
 			placeholderTypeId: placeholderType.id,
 			sortOrder: 0,
-			path: "",
+			folderIds: [],
 		});
 	}
 

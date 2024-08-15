@@ -7,18 +7,18 @@ export const COMMAND_FOLDERS_STORAGE_KEY = "command_folders";
 export class CommandFolder {
 	id!: string;
 	name!: string;
-	parentPath?: string | undefined;
+	parentFolderIds!: Array<string>;
 	sortOrder?: number;
 
 	static create(fields: {
 		name: string;
-		parentPath?: string;
+		parentFolderIds?: Array<string>;
 		sortOrder?: number;
 	}) {
-		return CommandFolder.fromJson({
+		return CommandFolder.fromJsonSafe({
 			id: uuidv4(),
 			name: fields.name,
-			parentPath: fields.parentPath,
+			parentFolderIds: fields.parentFolderIds ?? [],
 			sortOrder: fields.sortOrder,
 		});
 	}

@@ -1,6 +1,21 @@
 import * as vscode from "vscode";
 import TreeItem from "./TreeItem";
 import Command from "./models/command";
+import { CommandFolder } from "./models/command_folder";
+
+enum ItemType {
+	command = "command",
+	folder = "folder",
+}
+
+interface ITreeItem {
+	id: string | null;
+	name: string;
+	tooltip: string;
+	sortOrder?: number;
+	type: ItemType;
+	children: Array<ITreeItem>;
+}
 
 class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 	data: TreeItem[];
@@ -15,25 +30,101 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 		this.data = [];
 		this.refreshData();
 	}
+
+	private createTreeMap(
+		commands: Array<Command>,
+		folders: Array<CommandFolder>,
+	): Array<ITreeItem> {
+		const items: Array<ITreeItem> = [];
+		const foldersMap: Record<string, ITreeItem> = {};
+
+		for (const folder of folders) {
+			console.log(folder.parentFolderIds);
+
+			const folderId = [folder.id].join("/");
+			const treeItem = {
+				id: folder.id,
+				name: folder.name,
+				children: [],
+				type: ItemType.folder,
+				tooltip: "",
+			};
+			items.push(treeItem);
+			foldersMap[folderId] = treeItem;
+		}
+
+		for (const command of commands) {
+			const folder = command.folderIds?.join("/");
+			if (!folder || !foldersMap[folder]) {
+				items.push({
+					id: command.id,
+					name: command.name,
+					tooltip: command.command,
+					sortOrder: command.sortOrder,
+					type: ItemType.command,
+					children: [],
+				});
+				continue;
+			}
+			foldersMap[folder].children.push({
+				id: command.id,
+				name: command.name,
+				tooltip: command.command,
+				sortOrder: command.sortOrder,
+				type: ItemType.command,
+				children: [],
+			});
+		}
+
+		// TODO: Sort based on sort order
+		return items;
+	}
+
 	refreshData(): void {
-		const global: Array<Command> = Command.getGlobalCommands(this.context);
-		const workspace: Array<Command> = Command.getWorkspaceCommands(
+		const globalCommands: Array<Command> = Command.getGlobalCommands(
 			this.context,
+		);
+		const globalFolders: Array<CommandFolder> = CommandFolder.getGlobalFolders(
+			this.context,
+		);
+
+		const workspaceCommands: Array<Command> = Command.getWorkspaceCommands(
+			this.context,
+		);
+		const workspaceFolders: Array<CommandFolder> =
+			CommandFolder.getWorkspaceFolders(this.context);
+
+		const globalTree = this.createTreeMap(globalCommands, globalFolders);
+		const workspaceTree = this.createTreeMap(
+			workspaceCommands,
+			workspaceFolders,
 		);
 
 		const globalBasePath = "child-global";
 		const globalTreeItems: Array<TreeItem> =
-			global.length !== 0
-				? global.map(
-						(d) => new TreeItem(d.id, d.name, d.command, globalBasePath),
+			globalTree.length !== 0
+				? globalTree.map(
+						(d) =>
+							new TreeItem(
+								d.id,
+								d.name,
+								d.tooltip,
+								`${globalBasePath}-${d.type}`,
+							),
 					)
 				: [new TreeItem(null, "No Commands Found")];
 
 		const workspaceBasePath = "child-workspace";
 		const workspaceTreeItems: Array<TreeItem> =
-			workspace.length !== 0
-				? workspace.map(
-						(d) => new TreeItem(d.id, d.name, d.command, workspaceBasePath),
+			workspaceTree.length !== 0
+				? workspaceTree.map(
+						(d) =>
+							new TreeItem(
+								d.id,
+								d.name,
+								d.tooltip,
+								`${workspaceBasePath}-${d.type}`,
+							),
 					)
 				: [new TreeItem(null, "No Commands Found")];
 
@@ -57,7 +148,7 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 
 	refresh(): void {
 		this.refreshData();
-		this._onDidChangeTreeData.fire();
+		this._onDidChangeTreeData.fire(undefined);
 	}
 
 	getTreeItem(element: TreeItem): vscode.TreeItem | Thenable<vscode.TreeItem> {

@@ -27,13 +27,14 @@ export enum CommandInputType {
 export const singleInput = async (options: {
 	promptText: string;
 	placeholder: string;
+	initialValue?: string;
 }): Promise<string> => {
-	const { promptText, placeholder } = options;
+	const { promptText, placeholder, initialValue } = options;
 	try {
 		const str = await vscode.window.showInputBox({
 			prompt: promptText,
 			placeHolder: placeholder,
-			value: "",
+			value: initialValue ?? "",
 		});
 
 		if (!str) {
@@ -103,7 +104,7 @@ export const commandInput = async (
 			placeHolder: cmdPlaceholderLabel,
 			value: defaults?.cmd || undefined,
 		})) as string;
-		if (!name.trim() || !cmd.trim()) {
+		if (!name?.trim() || !cmd?.trim()) {
 			throw new Error("Bad Input");
 		}
 		return Promise.resolve(
@@ -173,16 +174,16 @@ export const commandFolderInput = async (defaults?: {
 	sortOrder?: number;
 }): Promise<CommandFolder> => {
 	try {
-		const name = (await vscode.window.showInputBox({
-			prompt: "Add Folder",
-			placeHolder: "Folder Name",
-			value: defaults?.name || undefined,
+		const name = (await singleInput({
+			promptText: "Add Folder",
+			placeholder: "Folder Name",
+			initialValue: defaults?.name || undefined,
 		})) as string;
-
 		return Promise.resolve(
 			CommandFolder.create({
 				name: name,
-				parentPath: defaults?.parentPath,
+				// TODO: Handle here
+				parentFolderIds: [],
 				sortOrder: defaults?.sortOrder,
 			}),
 		);

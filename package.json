@@ -123,8 +123,8 @@
 				"title": "Add Global Folder",
 				"category": "Save Commands",
 				"icon": {
-					"light": "resources/light/copy.svg",
-					"dark": "resources/dark/copy.svg"
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
 				}
 			},
 			{
@@ -132,8 +132,8 @@
 				"title": "Add Workspace Folder",
 				"category": "Save Commands",
 				"icon": {
-					"light": "resources/light/copy.svg",
-					"dark": "resources/dark/copy.svg"
+					"light": "resources/light/folder.svg",
+					"dark": "resources/dark/folder.svg"
 				}
 			}
 		],
@@ -198,26 +198,26 @@
 			"view/item/context": [
 				{
 					"command": "save-commands.editCommand",
-					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
 				},
 				{
 					"command": "save-commands.deleteCommand",
-					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
 				},
 				{
 					"command": "save-commands.copyCommand",
-					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace",
+					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command",
 					"group": "inline"
 				},
 				{
 					"command": "save-commands.runCommand",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
 				},
 				{
 					"command": "save-commands.runCommandInActiveTerminal",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == child-global || viewItem == child-workspace"
+					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
 				},
 				{
 					"command": "save-commands.addCommand",
@@ -238,6 +238,16 @@
 					"command": "save-commands.deleteGlobalCommands",
 					"group": "inline",
 					"when": "view == save-commands-view && viewItem == parent-global"
+				},
+				{
+					"command": "save-commands.addGlobalFolder",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == parent-global"
+				},
+				{
+					"command": "save-commands.addWorkspaceFolder",
+					"group": "inline",
+					"when": "view == save-commands-view && viewItem == parent-workspace"
 				}
 			]
 		}
