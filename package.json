@@ -7,6 +7,7 @@
 	"engines": {
 		"vscode": "^1.74.0"
 	},
+	"keywords": ["commands", "productivity", "workflows", "terminal"],
 	"categories": ["Other"],
 	"main": "./dist/extension.js",
 	"contributes": {
