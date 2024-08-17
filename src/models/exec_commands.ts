@@ -9,4 +9,6 @@ export enum ExecCommands {
 	reset = "save-commands.reset",
 	refreshView = "save-commands.refreshView",
 	addFolder = "save-commands.addFolder",
+	deleteFolder = "save-commands.deleteFolder",
+	editFolder = "save-commands.editFolder",
 }

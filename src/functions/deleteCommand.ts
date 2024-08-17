@@ -11,7 +11,7 @@ export default function (context: vscode.ExtensionContext) {
 			onConfirm: () => {
 				const { etter } = Command.getEtterFromTreeContext(item);
 				const c = etter.getValue(context);
-				const i = c.findIndex((d: Command) => d.id === item.cmdId);
+				const i = c.findIndex((d: Command) => d.id === item.id);
 				if (i > -1) {
 					c.splice(i, 1);
 				}

@@ -2,24 +2,13 @@ import * as vscode from "vscode";
 import TreeItem from "./TreeItem";
 import Command from "./models/command";
 import { CommandFolder } from "./models/command_folder";
+import { StateType } from "./models/etters";
 
-export enum RootTreeItemContext {
-	parentGlobal = "parent-global",
-	parentWorkspace = "parent-workspace",
-}
-
-enum ItemType {
+export enum ContextValue {
 	command = "command",
 	folder = "folder",
-}
-
-interface ITreeItem {
-	id: string | null;
-	name: string;
-	tooltip: string;
-	sortOrder?: number;
-	type: ItemType;
-	children: Array<ITreeItem>;
+	none = "none",
+	root = "root",
 }
 
 class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
@@ -39,50 +28,70 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 	private createTreeMap(
 		commands: Array<Command>,
 		folders: Array<CommandFolder>,
-	): Array<ITreeItem> {
-		const items: Array<ITreeItem> = [];
-		const foldersMap: Record<string, ITreeItem> = {};
+		stateType: StateType,
+	): Array<TreeItem> {
+		const items: Array<TreeItem> = [];
+		const foldersMap: Record<string, TreeItem> = {};
 
+		// Create folders
 		for (const folder of folders) {
-			console.log(folder.parentFolderIds);
-
-			const folderId = [folder.id].join("/");
-			const treeItem = {
+			const treeItem = new TreeItem({
 				id: folder.id,
-				name: folder.name,
+				label: folder.name,
 				children: [],
-				type: ItemType.folder,
-				tooltip: "",
-			};
+				parentFolderId: folder.parentFolderId,
+				tooltip: folder.name,
+				contextValue: ContextValue.folder,
+				stateType: stateType,
+			});
 			items.push(treeItem);
-			foldersMap[folderId] = treeItem;
+			foldersMap[folder.id] = treeItem;
 		}
 
+		// Add commands to folder
 		for (const command of commands) {
-			const folder = command.folderIds?.join("/");
-			if (!folder || !foldersMap[folder]) {
-				items.push({
-					id: command.id,
-					name: command.name,
-					tooltip: command.command,
-					sortOrder: command.sortOrder,
-					type: ItemType.command,
-					children: [],
-				});
+			const parentFolderId = command.parentFolderId;
+			if (!parentFolderId || !foldersMap[parentFolderId]) {
+				items.push(
+					new TreeItem({
+						id: command.id,
+						label: command.name,
+						tooltip: command.command,
+						sortOrder: command.sortOrder,
+						parentFolderId: command.parentFolderId,
+						contextValue: ContextValue.command,
+						children: [],
+						stateType: stateType,
+					}),
+				);
 				continue;
 			}
-			foldersMap[folder].children.push({
-				id: command.id,
-				name: command.name,
-				tooltip: command.command,
-				sortOrder: command.sortOrder,
-				type: ItemType.command,
-				children: [],
-			});
+			foldersMap[parentFolderId]?.children?.push(
+				new TreeItem({
+					id: command.id,
+					label: command.name,
+					tooltip: command.command,
+					sortOrder: command.sortOrder,
+					parentFolderId: command.parentFolderId,
+					contextValue: ContextValue.command,
+					children: [],
+					stateType: stateType,
+				}),
+			);
 		}
 
+		// Add folder inside folders
+
 		// TODO: Sort based on sort order
-		return items;
+		const filteredItems = items.filter((item) => {
+			if (item.contextValue !== ContextValue.folder) return true;
+			const parent = item.parentFolderId;
+			if (!parent) return true;
+			foldersMap[parent]?.children?.push(item);
+			return false;
+		});
+
+		return filteredItems;
 	}
 
 	refreshData(): void {
@@ -98,55 +107,58 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 		const workspaceFolders: Array<CommandFolder> =
 			CommandFolder.etters.workspace.getValue(this.context);
 
-		const globalTree = this.createTreeMap(globalCommands, globalFolders);
+		const globalTree = this.createTreeMap(
+			globalCommands,
+			globalFolders,
+			StateType.global,
+		);
 		const workspaceTree = this.createTreeMap(
 			workspaceCommands,
 			workspaceFolders,
+			StateType.workspace,
 		);
 
-		const globalBasePath = "child-global";
 		const globalTreeItems: Array<TreeItem> =
 			globalTree.length !== 0
-				? globalTree.map(
-						(d) =>
-							new TreeItem(
-								d.id,
-								d.name,
-								d.tooltip,
-								`${globalBasePath}-${d.type}`,
-							),
-					)
-				: [new TreeItem(null, "No Commands Found")];
+				? globalTree
+				: [
+						new TreeItem({
+							id: null,
+							label: "No Commands Found",
+							contextValue: ContextValue.none,
+							stateType: StateType.global,
+						}),
+					];
 
-		const workspaceBasePath = "child-workspace";
 		const workspaceTreeItems: Array<TreeItem> =
 			workspaceTree.length !== 0
-				? workspaceTree.map(
-						(d) =>
-							new TreeItem(
-								d.id,
-								d.name,
-								d.tooltip,
-								`${workspaceBasePath}-${d.type}`,
-							),
-					)
-				: [new TreeItem(null, "No Commands Found")];
+				? workspaceTree
+				: [
+						new TreeItem({
+							id: null,
+							label: "No Commands Found",
+							contextValue: ContextValue.none,
+							stateType: StateType.workspace,
+						}),
+					];
 
 		this.data = [
-			new TreeItem(
-				null,
-				"Global Commands",
-				"",
-				RootTreeItemContext.parentGlobal,
-				globalTreeItems,
-			),
-			new TreeItem(
-				null,
-				"Workspace Commands",
-				"",
-				RootTreeItemContext.parentWorkspace,
-				workspaceTreeItems,
-			),
+			new TreeItem({
+				id: null,
+				label: "Global Commands",
+				tooltip: "",
+				contextValue: ContextValue.root,
+				children: globalTreeItems,
+				stateType: StateType.global,
+			}),
+			new TreeItem({
+				id: null,
+				label: "Workspace Commands",
+				tooltip: "",
+				stateType: StateType.workspace,
+				contextValue: ContextValue.root,
+				children: workspaceTreeItems,
+			}),
 		];
 	}
 

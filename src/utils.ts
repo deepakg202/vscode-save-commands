@@ -170,7 +170,7 @@ export const getActivePlaceholderType = (): PlaceholderType => {
 
 export const commandFolderInput = async (defaults?: {
 	name?: string;
-	parentPath?: string;
+	parentFolderId?: string;
 	sortOrder?: number;
 }): Promise<CommandFolder> => {
 	try {
@@ -182,8 +182,7 @@ export const commandFolderInput = async (defaults?: {
 		return Promise.resolve(
 			CommandFolder.create({
 				name: name,
-				// TODO: Handle here
-				parentFolderIds: [],
+				parentFolderId: defaults?.parentFolderId,
 				sortOrder: defaults?.sortOrder,
 			}),
 		);

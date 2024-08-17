@@ -7,6 +7,8 @@ import runCommandFn from "./runCommand";
 import addFolderFn from "./addFolder";
 import addCommandFn from "./addCommand";
 import deleteCommandsFn from "./deleteCommands";
+import deleteFolderFn from "./deleteFolder";
+import editFolderFn from "./editFolder";
 
 export {
 	deleteCommandFn,
@@ -18,4 +20,6 @@ export {
 	addCommandFn,
 	addFolderFn,
 	deleteCommandsFn,
+	deleteFolderFn,
+	editFolderFn,
 };

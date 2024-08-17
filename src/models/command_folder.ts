@@ -10,18 +10,18 @@ const COMMAND_FOLDERS_STORAGE_KEY = "command_folders";
 export class CommandFolder {
 	id!: string;
 	name!: string;
-	parentFolderIds!: Array<string>;
+	parentFolderId?: string | null;
 	sortOrder?: number;
 
 	static create(fields: {
 		name: string;
-		parentFolderIds?: Array<string>;
+		parentFolderId?: string | null;
 		sortOrder?: number;
 	}) {
 		return CommandFolder.fromJsonSafe({
 			id: uuidv4(),
 			name: fields.name,
-			parentFolderIds: fields.parentFolderIds ?? [],
+			parentFolderId: fields.parentFolderId,
 			sortOrder: fields.sortOrder,
 		});
 	}
@@ -45,21 +45,21 @@ export class CommandFolder {
 		etter: IEtter<Array<CommandFolder>>;
 		stateType: StateType;
 	} {
-		const contextValue = treeItem.contextValue;
-		if (contextValue?.includes("workspace")) {
+		const stateType = treeItem.stateType;
+		if (stateType === StateType.workspace) {
 			return {
 				stateType: StateType.workspace,
 				etter: CommandFolder.etters.workspace,
 			};
 		}
-		if (contextValue?.includes("global")) {
+		if (stateType === StateType.global) {
 			return {
 				stateType: StateType.global,
 				etter: CommandFolder.etters.global,
 			};
 		}
 		throw new ReadableError(
-			`Unknown contextValue: ${contextValue} to get CommandFolder etter`,
+			`Unknown stateType: ${stateType} to get CommandFolder etter`,
 		);
 	}
 }

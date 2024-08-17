@@ -65,6 +65,15 @@
 				"category": "Save Commands"
 			},
 			{
+				"command": "save-commands.editFolder",
+				"title": "Edit Folder",
+				"icon": {
+					"light": "resources/light/edit.svg",
+					"dark": "resources/dark/edit.svg"
+				},
+				"category": "Save Commands"
+			},
+			{
 				"command": "save-commands.deleteCommands",
 				"title": "Delete Commands",
 				"icon": {
@@ -105,8 +114,17 @@
 				"title": "Add Folder",
 				"category": "Save Commands",
 				"icon": {
-					"light": "resources/light/folder.svg",
-					"dark": "resources/dark/folder.svg"
+					"light": "resources/light/new_folder.svg",
+					"dark": "resources/dark/new_folder.svg"
+				}
+			},
+			{
+				"command": "save-commands.deleteFolder",
+				"title": "Delete Folder",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/trash.svg",
+					"dark": "resources/dark/trash.svg"
 				}
 			}
 		],
@@ -155,6 +173,14 @@
 				{
 					"command": "save-commands.addFolder",
 					"when": "false"
+				},
+				{
+					"command": "save-commands.deleteFolder",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.editFolder",
+					"when": "false"
 				}
 			],
 			"view/title": [
@@ -171,41 +197,49 @@
 			"view/item/context": [
 				{
 					"command": "save-commands.editCommand",
-					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
+					"when": "view == save-commands-view && viewItem == command"
 				},
 				{
 					"command": "save-commands.deleteCommand",
-					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
+					"when": "view == save-commands-view && viewItem == command"
+				},
+				{
+					"command": "save-commands.deleteFolder",
+					"when": "view == save-commands-view && viewItem == folder"
+				},
+				{
+					"command": "save-commands.editFolder",
+					"when": "view == save-commands-view && viewItem == folder"
 				},
 				{
 					"command": "save-commands.copyCommand",
-					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command",
+					"when": "view == save-commands-view && viewItem == command",
 					"group": "inline"
 				},
 				{
 					"command": "save-commands.runCommand",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
+					"when": "view == save-commands-view && viewItem == command"
 				},
 				{
 					"command": "save-commands.runCommandInActiveTerminal",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == child-global-command || viewItem == child-workspace-command"
+					"when": "view == save-commands-view && viewItem == command"
 				},
 				{
 					"command": "save-commands.addCommand",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == parent-workspace || viewItem == parent-global"
+					"when": "view == save-commands-view && viewItem == root || viewItem == folder"
 				},
 				{
 					"command": "save-commands.deleteCommands",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == parent-workspace || viewItem == parent-global"
+					"when": "view == save-commands-view && viewItem == root"
 				},
 				{
 					"command": "save-commands.addFolder",
 					"group": "inline",
-					"when": "view == save-commands-view && viewItem == parent-global || viewItem == parent-workspace"
+					"when": "view == save-commands-view && viewItem == root || viewItem == folder"
 				}
 			]
 		}

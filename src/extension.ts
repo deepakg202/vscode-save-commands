@@ -12,6 +12,8 @@ import {
 	resetFn,
 	runCommandFn,
 	runCommandInActiveTerminalFn,
+	deleteFolderFn,
+	editFolderFn,
 } from "./functions";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -30,6 +32,8 @@ export function activate(context: vscode.ExtensionContext) {
 		[ExecCommands.reset]: resetFn(context),
 		[ExecCommands.refreshView]: () => treeView.refresh(),
 		[ExecCommands.addFolder]: addFolderFn(context),
+		[ExecCommands.deleteFolder]: deleteFolderFn(context),
+		[ExecCommands.editFolder]: editFolderFn(context),
 	};
 
 	const subscriptions = Object.keys(callbacks).map((key) => {

@@ -15,7 +15,7 @@ export default function (context: vscode.ExtensionContext) {
 			vscode.window.showInformationMessage(
 				`Editing ${item.label} | Scope: ${stateType}`,
 			);
-			const i = commands.findIndex((d: Command) => d.id === item.cmdId);
+			const i = commands.findIndex((d: Command) => d.id === item.id);
 			if (i > -1) {
 				const val = await commandInput(CommandInputType.edit, {
 					name: commands[i].name,

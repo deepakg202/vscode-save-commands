@@ -10,7 +10,7 @@ export default function (context: vscode.ExtensionContext) {
 		try {
 			const { etter } = Command.getEtterFromTreeContext(item);
 			commands = etter.getValue(context);
-			const i = commands.findIndex((d: Command) => d.id === item.cmdId);
+			const i = commands.findIndex((d: Command) => d.id === item.id);
 			if (i > -1) {
 				const terminalId = `${commands[i].name}-${generateString(5)}`;
 				const terminal = vscode.window.createTerminal(terminalId);

@@ -10,7 +10,7 @@ export default function (context: vscode.ExtensionContext) {
 			const { etter } = Command.getEtterFromTreeContext(item);
 			c = etter.getValue(context);
 
-			const i = c.findIndex((d: Command) => d.id === item.cmdId);
+			const i = c.findIndex((d: Command) => d.id === item.id);
 			if (i > -1) {
 				const resolvedCommand = await c[i].resolveCommand(
 					context,

@@ -24,7 +24,7 @@ export default class Command {
 	command!: string;
 	placeholderTypeId!: string;
 	sortOrder?: number;
-	folderIds?: Array<string>;
+	parentFolderId?: string | null;
 
 	getPlaceholderType(): PlaceholderType {
 		return (
@@ -45,7 +45,8 @@ export default class Command {
 			command,
 			placeholderTypeId: placeholderType.id,
 			sortOrder: 0,
-			folderIds: [],
+			// TODO: handle
+			parentFolderId: null,
 		});
 	}
 
@@ -68,18 +69,18 @@ export default class Command {
 		etter: IEtter<Array<Command>>;
 		stateType: StateType;
 	} {
-		const contextValue = treeItem.contextValue;
-		if (contextValue?.includes("workspace")) {
+		const stateType = treeItem.stateType;
+		if (stateType === StateType.workspace) {
 			return {
 				stateType: StateType.workspace,
 				etter: Command.etters.workspace,
 			};
 		}
-		if (contextValue?.includes("global")) {
+		if (stateType === StateType.global) {
 			return { stateType: StateType.global, etter: Command.etters.global };
 		}
 		throw new ReadableError(
-			`Unknown contextValue: ${contextValue} to get Command etter`,
+			`Unknown stateType: ${stateType} to get Command etter`,
 		);
 	}
 

@@ -11,14 +11,20 @@ export default function (context: vscode.ExtensionContext) {
 
 			vscode.window.showWarningMessage(`Add ${stateType} Command Folder`);
 
-			const newFolder = await commandFolderInput();
-			const c = etter.getValue(context);
+			let parentFolderId: string | undefined;
+			if (item.contextValue?.includes("folder")) {
+				parentFolderId = item.id;
+			}
+			const newFolder = await commandFolderInput({ parentFolderId });
+			const folders = etter.getValue(context);
 
 			// TODO: sort by sortOrder
-			c.push(newFolder);
-			etter.setValue(context, c);
+			folders.push(newFolder);
+			etter.setValue(context, folders);
 
-			vscode.window.showInformationMessage("Added Global Folder Successfully");
+			vscode.window.showInformationMessage(
+				`Added ${stateType} Folder Successfully`,
+			);
 			vscode.commands.executeCommand(ExecCommands.refreshView);
 		} catch (er) {
 			vscode.window.showErrorMessage("Error Adding Command Folder");
