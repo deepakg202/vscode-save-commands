@@ -1,8 +1,11 @@
 import { instanceToPlain, plainToInstance } from "class-transformer";
 import { uuidv4 } from "../utils";
-import type { ExtensionContext } from "vscode";
 import type { JSONObj, PickProperties } from "./base_types";
-export const COMMAND_FOLDERS_STORAGE_KEY = "command_folders";
+import { ExtensionContextListEtter, type IEtter, StateType } from "./etters";
+import type TreeItem from "../TreeItem";
+import ReadableError from "./error";
+
+const COMMAND_FOLDERS_STORAGE_KEY = "command_folders";
 
 export class CommandFolder {
 	id!: string;
@@ -35,16 +38,28 @@ export class CommandFolder {
 		return instanceToPlain(this);
 	}
 
-	static getWorkspaceFolders(context: ExtensionContext): Array<CommandFolder> {
-		const commands =
-			context.workspaceState.get<Array<JSONObj>>(COMMAND_FOLDERS_STORAGE_KEY) ??
-			[];
-		return commands.map((value) => CommandFolder.fromJson(value));
-	}
-	static getGlobalFolders(context: ExtensionContext): Array<CommandFolder> {
-		const commands =
-			context.globalState.get<Array<JSONObj>>(COMMAND_FOLDERS_STORAGE_KEY) ??
-			[];
-		return commands.map((value) => CommandFolder.fromJson(value));
+	static etters: ExtensionContextListEtter<CommandFolder> =
+		new ExtensionContextListEtter(COMMAND_FOLDERS_STORAGE_KEY, this.fromJson);
+
+	static getEtterFromTreeContext(treeItem: TreeItem): {
+		etter: IEtter<Array<CommandFolder>>;
+		stateType: StateType;
+	} {
+		const contextValue = treeItem.contextValue;
+		if (contextValue?.includes("workspace")) {
+			return {
+				stateType: StateType.workspace,
+				etter: CommandFolder.etters.workspace,
+			};
+		}
+		if (contextValue?.includes("global")) {
+			return {
+				stateType: StateType.global,
+				etter: CommandFolder.etters.global,
+			};
+		}
+		throw new ReadableError(
+			`Unknown contextValue: ${contextValue} to get CommandFolder etter`,
+		);
 	}
 }

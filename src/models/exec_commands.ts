@@ -1,15 +1,12 @@
 export enum ExecCommands {
 	runCommand = "save-commands.runCommand",
 	addCommand = "save-commands.addCommand",
-	addGlobalCommand = "save-commands.addGlobalCommand",
-	deleteWorkspaceCommands = "save-commands.deleteWorkspaceCommands",
-	deleteGlobalCommands = "save-commands.deleteGlobalCommands",
+	deleteCommands = "save-commands.deleteCommands",
 	deleteCommand = "save-commands.deleteCommand",
 	editCommand = "save-commands.editCommand",
 	copyCommand = "save-commands.copyCommand",
 	runCommandInActiveTerminal = "save-commands.runCommandInActiveTerminal",
 	reset = "save-commands.reset",
 	refreshView = "save-commands.refreshView",
-	addGlobalFolder = "save-commands.addGlobalFolder",
-	addWorkspaceFolder = "save-commands.addWorkspaceFolder",
+	addFolder = "save-commands.addFolder",
 }

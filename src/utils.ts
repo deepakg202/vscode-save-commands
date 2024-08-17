@@ -19,8 +19,8 @@ enum InputFieldType {
 }
 
 export enum CommandInputType {
-	edit = 0,
-	addGlobal = 1,
+	edit = "Edit",
+	addGlobal = "Global",
 	addWorkspace = "Workspace",
 }
 

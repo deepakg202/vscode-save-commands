@@ -6,7 +6,11 @@ import {
 	PlaceholderType,
 } from "./placeholder_types";
 import type { JSONObj, PickProperties } from "./base_types";
-export const COMMAND_STORAGE_KEY = "commands";
+import { ExtensionContextListEtter, type IEtter, StateType } from "./etters";
+import type TreeItem from "../TreeItem";
+import ReadableError from "./error";
+
+const COMMAND_STORAGE_KEY = "commands";
 
 export enum ResolveCommandType {
 	runActive = "RUN (Active)",
@@ -57,15 +61,26 @@ export default class Command {
 		return Command.fromJson(json);
 	}
 
-	static getWorkspaceCommands(context: ExtensionContext): Array<Command> {
-		const commands =
-			context.workspaceState.get<Array<JSONObj>>(COMMAND_STORAGE_KEY) ?? [];
-		return commands.map((value) => Command.fromJson(value));
-	}
-	static getGlobalCommands(context: ExtensionContext): Array<Command> {
-		const commands =
-			context.globalState.get<Array<JSONObj>>(COMMAND_STORAGE_KEY) ?? [];
-		return commands.map((value) => Command.fromJson(value));
+	static etters: ExtensionContextListEtter<Command> =
+		new ExtensionContextListEtter(COMMAND_STORAGE_KEY, this.fromJson);
+
+	static getEtterFromTreeContext(treeItem: TreeItem): {
+		etter: IEtter<Array<Command>>;
+		stateType: StateType;
+	} {
+		const contextValue = treeItem.contextValue;
+		if (contextValue?.includes("workspace")) {
+			return {
+				stateType: StateType.workspace,
+				etter: Command.etters.workspace,
+			};
+		}
+		if (contextValue?.includes("global")) {
+			return { stateType: StateType.global, etter: Command.etters.global };
+		}
+		throw new ReadableError(
+			`Unknown contextValue: ${contextValue} to get Command etter`,
+		);
 	}
 
 	async resolveCommand(

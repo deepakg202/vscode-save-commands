@@ -3,6 +3,11 @@ import TreeItem from "./TreeItem";
 import Command from "./models/command";
 import { CommandFolder } from "./models/command_folder";
 
+export enum RootTreeItemContext {
+	parentGlobal = "parent-global",
+	parentWorkspace = "parent-workspace",
+}
+
 enum ItemType {
 	command = "command",
 	folder = "folder",
@@ -81,18 +86,17 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 	}
 
 	refreshData(): void {
-		const globalCommands: Array<Command> = Command.getGlobalCommands(
+		const globalCommands: Array<Command> = Command.etters.global.getValue(
 			this.context,
 		);
-		const globalFolders: Array<CommandFolder> = CommandFolder.getGlobalFolders(
-			this.context,
-		);
+		const globalFolders: Array<CommandFolder> =
+			CommandFolder.etters.global.getValue(this.context);
 
-		const workspaceCommands: Array<Command> = Command.getWorkspaceCommands(
+		const workspaceCommands: Array<Command> = Command.etters.workspace.getValue(
 			this.context,
 		);
 		const workspaceFolders: Array<CommandFolder> =
-			CommandFolder.getWorkspaceFolders(this.context);
+			CommandFolder.etters.workspace.getValue(this.context);
 
 		const globalTree = this.createTreeMap(globalCommands, globalFolders);
 		const workspaceTree = this.createTreeMap(
@@ -133,14 +137,14 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 				null,
 				"Global Commands",
 				"",
-				"parent-global",
+				RootTreeItemContext.parentGlobal,
 				globalTreeItems,
 			),
 			new TreeItem(
 				null,
 				"Workspace Commands",
 				"",
-				"parent-workspace",
+				RootTreeItemContext.parentWorkspace,
 				workspaceTreeItems,
 			),
 		];

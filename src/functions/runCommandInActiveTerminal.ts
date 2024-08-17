@@ -8,13 +8,8 @@ export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
 		let commands: Array<Command>;
 		try {
-			if (item.contextValue === "child-workspace") {
-				commands = Command.getWorkspaceCommands(context);
-			} else if (item.contextValue === "child-global") {
-				commands = Command.getGlobalCommands(context);
-			} else {
-				throw new ReadableError("Unknown contextValue");
-			}
+			const { etter } = Command.getEtterFromTreeContext(item);
+			commands = etter.getValue(context);
 			const i = commands.findIndex((d: Command) => d.id === item.cmdId);
 			if (i > -1) {
 				const activeTerminal = vscode.window.activeTerminal;

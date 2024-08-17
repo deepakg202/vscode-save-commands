@@ -1,27 +1,19 @@
 import * as vscode from "vscode";
 import { CommandInputType, commandInput } from "../utils";
 import type TreeItem from "../TreeItem";
-import Command, { COMMAND_STORAGE_KEY } from "../models/command";
+import Command from "../models/command";
 import { ExecCommands } from "../models/exec_commands";
 import ReadableError from "../models/error";
 
-// TODO: Can be refactored
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
 		let commands: Array<Command>;
 		try {
-			let workspaceType: string;
-			if (item.contextValue === "child-workspace") {
-				commands = Command.getWorkspaceCommands(context);
-				workspaceType = "Workspace";
-			} else if (item.contextValue === "child-global") {
-				commands = Command.getGlobalCommands(context);
-				workspaceType = "Global";
-			} else {
-				throw new ReadableError("Unknown contextValue");
-			}
+			const { etter, stateType } = Command.getEtterFromTreeContext(item);
+
+			commands = etter.getValue(context);
 			vscode.window.showInformationMessage(
-				`Editing ${item.label} | Scope: ${workspaceType}`,
+				`Editing ${item.label} | Scope: ${stateType}`,
 			);
 			const i = commands.findIndex((d: Command) => d.id === item.cmdId);
 			if (i > -1) {
@@ -32,12 +24,7 @@ export default function (context: vscode.ExtensionContext) {
 				});
 				commands[i].name = val.name;
 				commands[i].command = val.command;
-				if (item.contextValue === "child-workspace") {
-					context.workspaceState.update(COMMAND_STORAGE_KEY, commands);
-				} else if (item.contextValue === "child-global") {
-					context.globalState.update(COMMAND_STORAGE_KEY, commands);
-				}
-
+				etter.setValue(context, commands);
 				vscode.commands.executeCommand(ExecCommands.refreshView);
 			} else {
 				throw new ReadableError("Unable to find the command in state");

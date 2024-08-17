@@ -1,27 +1,21 @@
-import addCommandFn from "./addWorkspaceCommand";
-import addGlobalCommandFn from "./addGlobalCommand";
-import deleteWorkspaceCommands from "./deleteWorkspaceCommands";
-import deleteGlobalCommands from "./deleteGlobalCommands";
 import deleteCommandFn from "./deleteCommand";
 import editCommandFn from "./editCommand";
 import resetFn from "./reset";
 import copyCommandFn from "./copyCommand";
 import runCommandInActiveTerminalFn from "./runCommandInActiveTerminal";
 import runCommandFn from "./runCommand";
-import addGlobalFolderFn from "./addGlobalFolder";
-import addWorkspaceFolderFn from "./addWorkspaceFolder";
+import addFolderFn from "./addFolder";
+import addCommandFn from "./addCommand";
+import deleteCommandsFn from "./deleteCommands";
 
 export {
-	addGlobalCommandFn,
-	addCommandFn,
 	deleteCommandFn,
-	deleteWorkspaceCommands,
 	resetFn,
 	editCommandFn,
-	deleteGlobalCommands,
 	copyCommandFn,
 	runCommandInActiveTerminalFn,
 	runCommandFn,
-	addGlobalFolderFn,
-	addWorkspaceFolderFn,
+	addCommandFn,
+	addFolderFn,
+	deleteCommandsFn,
 };
