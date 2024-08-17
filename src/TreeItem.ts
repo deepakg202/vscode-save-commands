@@ -40,8 +40,8 @@ class TreeItem extends vscode.TreeItem {
 
 		if (this.contextValue === ContextValue.folder) {
 			this.iconPath = new vscode.ThemeIcon("folder");
-		} else if(this.contextValue === ContextValue.command) {
-			this.iconPath = new vscode.ThemeIcon("terminal")
+		} else if (this.contextValue === ContextValue.command) {
+			this.iconPath = new vscode.ThemeIcon("terminal");
 		}
 	}
 }
