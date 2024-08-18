@@ -6,10 +6,9 @@ import { generateString } from "../utils";
 
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
-		let commands: Array<Command>;
-		try {
+		ReadableError.runGuarded(async () => {
 			const { etter } = Command.getEtterFromTreeContext(item);
-			commands = etter.getValue(context);
+			const commands = etter.getValue(context);
 			const i = commands.findIndex((d: Command) => d.id === item.id);
 			if (i > -1) {
 				const terminalId = `${commands[i].name}-${generateString(5)}`;
@@ -23,12 +22,6 @@ export default function (context: vscode.ExtensionContext) {
 			} else {
 				throw new ReadableError("Unable to find the command in state");
 			}
-		} catch (e) {
-			if (e instanceof ReadableError) {
-				vscode.window.showErrorMessage(e.message);
-				return;
-			}
-			vscode.window.showErrorMessage("Unable to execute the command");
-		}
+		}, "Unable to execute the command");
 	};
 }

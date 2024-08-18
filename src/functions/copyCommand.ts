@@ -5,26 +5,23 @@ import ReadableError from "../models/error";
 
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
-		let c: Array<Command>;
-		try {
+		ReadableError.runGuarded(async () => {
 			const { etter } = Command.getEtterFromTreeContext(item);
-			c = etter.getValue(context);
+			const commands = etter.getValue(context);
 
-			const i = c.findIndex((d: Command) => d.id === item.id);
+			const i = commands.findIndex((d: Command) => d.id === item.id);
 			if (i > -1) {
-				const resolvedCommand = await c[i].resolveCommand(
+				const resolvedCommand = await commands[i].resolveCommand(
 					context,
 					ResolveCommandType.copy,
 				);
 				vscode.env.clipboard.writeText(resolvedCommand);
 				vscode.window.showInformationMessage(
-					`${c[i].name} Command Copied to Clipboard`,
+					`${commands[i].name} Command Copied to Clipboard`,
 				);
 			} else {
 				throw new ReadableError("Unable to find the command in state");
 			}
-		} catch (e) {
-			vscode.window.showErrorMessage("Unable to copy the command");
-		}
+		}, "Unable to copy the command");
 	};
 }

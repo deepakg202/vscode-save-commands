@@ -7,25 +7,22 @@ import { CommandFolder } from "../models/command_folder";
 
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
-		let commands: Array<CommandFolder>;
-		try {
+		ReadableError.runGuarded(async () => {
 			const { etter } = CommandFolder.getEtterFromTreeContext(item);
 
-			commands = etter.getValue(context);
+			const folders = etter.getValue(context);
 			vscode.window.showInformationMessage("Edit Folder");
-			const i = commands.findIndex((d: CommandFolder) => d.id === item.id);
+			const i = folders.findIndex((d: CommandFolder) => d.id === item.id);
 			if (i > -1) {
 				const val = await commandFolderInput({
-					name: commands[i].name,
+					name: folders[i].name,
 				});
-				commands[i].name = val.name;
-				etter.setValue(context, commands);
+				folders[i].name = val.name;
+				etter.setValue(context, folders);
 				vscode.commands.executeCommand(ExecCommands.refreshView);
 			} else {
 				throw new ReadableError("Unable to find the folder in state");
 			}
-		} catch (e) {
-			vscode.window.showErrorMessage("Unable to edit the command");
-		}
+		}, "Unable to edit the folder");
 	};
 }

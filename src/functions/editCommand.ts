@@ -7,11 +7,10 @@ import ReadableError from "../models/error";
 
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
-		let commands: Array<Command>;
-		try {
+		ReadableError.runGuarded(async () => {
 			const { etter, stateType } = Command.getEtterFromTreeContext(item);
 
-			commands = etter.getValue(context);
+			const commands = etter.getValue(context);
 			vscode.window.showInformationMessage(
 				`Editing ${item.label} | Scope: ${stateType}`,
 			);
@@ -29,8 +28,6 @@ export default function (context: vscode.ExtensionContext) {
 			} else {
 				throw new ReadableError("Unable to find the command in state");
 			}
-		} catch (e) {
-			vscode.window.showErrorMessage("Unable to edit the command");
-		}
+		}, "Unable to edit the command");
 	};
 }

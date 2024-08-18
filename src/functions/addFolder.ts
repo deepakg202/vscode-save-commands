@@ -3,10 +3,11 @@ import { commandFolderInput } from "../utils";
 import { ExecCommands } from "../models/exec_commands";
 import type TreeItem from "../TreeItem";
 import { CommandFolder } from "../models/command_folder";
+import ReadableError from "../models/error";
 
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
-		try {
+		ReadableError.runGuarded(async () => {
 			const { etter, stateType } = CommandFolder.getEtterFromTreeContext(item);
 
 			vscode.window.showWarningMessage(`Add ${stateType} Command Folder`);
@@ -26,9 +27,6 @@ export default function (context: vscode.ExtensionContext) {
 				`Added ${stateType} Folder Successfully`,
 			);
 			vscode.commands.executeCommand(ExecCommands.refreshView);
-		} catch (er) {
-			vscode.window.showErrorMessage("Error Adding Command Folder");
-			console.error(er);
-		}
+		}, "Error Adding Command Folder");
 	};
 }

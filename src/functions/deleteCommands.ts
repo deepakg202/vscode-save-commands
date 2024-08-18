@@ -4,6 +4,7 @@ import Command from "../models/command";
 import { ExecCommands } from "../models/exec_commands";
 import type TreeItem from "../TreeItem";
 import { CommandFolder } from "../models/command_folder";
+import ReadableError from "../models/error";
 
 export default function (context: vscode.ExtensionContext) {
 	return (item: TreeItem) => {
@@ -16,10 +17,12 @@ export default function (context: vscode.ExtensionContext) {
 		}
 		confirmationDialog({
 			onConfirm: () => {
-				etter.setValue(context, []);
-				folderEtter.setValue(context, []);
-				vscode.commands.executeCommand(ExecCommands.refreshView);
-				vscode.window.showInformationMessage(`${stateType} Commands Deleted`);
+				ReadableError.runGuarded(async () => {
+					etter.setValue(context, []);
+					folderEtter.setValue(context, []);
+					vscode.commands.executeCommand(ExecCommands.refreshView);
+					vscode.window.showInformationMessage(`${stateType} Commands Deleted`);
+				});
 			},
 			message: `Are you sure you want to delete all ${stateType} commands?`,
 		});
