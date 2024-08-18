@@ -2,6 +2,10 @@
 
 All notable changes to the "save-commands" extension will be documented in this file.
 
+## [1.0.0]
+- Create Folders
+- Import/Export
+
 ## [0.5.0]
 - Add setting to change placeholder capturing group
 
@@ -9,5 +13,4 @@ All notable changes to the "save-commands" extension will be documented in this 
 - Add Placeholder
 
 ## [0.0.1]
-
 - Initial release
