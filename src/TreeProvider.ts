@@ -85,12 +85,11 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 			if (item.contextValue !== ContextValue.folder) return true;
 			const parent = item.parentFolderId;
 			if (!parent) return true;
-			foldersMap[parent]?.children?.push(item);
+			foldersMap[parent]?.children?.unshift(item);
 			return false;
 		});
 
 		// TODO: Sort based on sort order
-
 
 		return filteredItems;
 	}
