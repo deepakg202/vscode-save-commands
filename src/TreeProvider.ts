@@ -81,8 +81,6 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 		}
 
 		// Add folder inside folders
-
-		// TODO: Sort based on sort order
 		const filteredItems = items.filter((item) => {
 			if (item.contextValue !== ContextValue.folder) return true;
 			const parent = item.parentFolderId;
@@ -90,6 +88,9 @@ class TreeDataProvider implements vscode.TreeDataProvider<TreeItem> {
 			foldersMap[parent]?.children?.push(item);
 			return false;
 		});
+
+		// TODO: Sort based on sort order
+
 
 		return filteredItems;
 	}

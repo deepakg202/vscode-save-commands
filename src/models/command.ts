@@ -46,6 +46,7 @@ export default class Command {
 			name,
 			command,
 			placeholderTypeId: placeholderType.id,
+			// TODO: Handle sortOrder
 			sortOrder: 0,
 			parentFolderId: parentFolderId,
 		});

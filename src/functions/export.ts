@@ -32,7 +32,7 @@ export default function (context: vscode.ExtensionContext) {
 				"utf-8",
 			);
 
-			vscode.window.showInformationMessage("Backup successful");
+			vscode.window.showInformationMessage("Export successful");
 		}, "Failed Exporting");
 	};
 }

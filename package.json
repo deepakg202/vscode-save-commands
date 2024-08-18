@@ -186,8 +186,7 @@
 					"when": "false"
 				},
 				{
-					"command": "save-commands.reset",
-					"when": "false"
+					"command": "save-commands.reset"
 				},
 				{
 					"command": "save-commands.addFolder",
@@ -198,16 +197,18 @@
 					"when": "false"
 				},
 				{
+					"command": "save-commands.addCommand",
+					"when": "false"
+				},
+				{
 					"command": "save-commands.editFolder",
 					"when": "false"
 				},
 				{
-					"command": "save-commands.import",
-					"when": "false"
+					"command": "save-commands.import"
 				},
 				{
-					"command": "save-commands.export",
-					"when": "false"
+					"command": "save-commands.export"
 				}
 			],
 			"view/title": [

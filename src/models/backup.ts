@@ -1,17 +1,22 @@
-import { instanceToPlain, plainToInstance } from "class-transformer";
+import { instanceToPlain, plainToInstance, Type } from "class-transformer";
 import type { JSONObj, PickProperties } from "./base_types";
-import type Command from "./command";
-import type { CommandFolder } from "./command_folder";
+import Command from "./command";
+import { CommandFolder } from "./command_folder";
+
+class BackupFields {
+	@Type(() => Command)
+	commands!: Array<Command>;
+
+	@Type(() => CommandFolder)
+	folders!: Array<CommandFolder>;
+}
 
 export class BackupModel {
-	global?: {
-		commands: Array<Command>;
-		folders: Array<CommandFolder>;
-	};
-	workspace?: {
-		commands: Array<Command>;
-		folders: Array<CommandFolder>;
-	};
+	@Type(() => BackupFields)
+	global?: BackupFields;
+
+	@Type(() => BackupFields)
+	workspace?: BackupFields;
 
 	toJson(): JSONObj {
 		return instanceToPlain(this);
