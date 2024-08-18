@@ -2,7 +2,7 @@
 
 All notable changes to the "save-commands" extension will be documented in this file.
 
-## [0.6.0]
+## [1.0.0]
 - Create Folders
 - Import/Export
 
