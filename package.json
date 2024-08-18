@@ -127,6 +127,24 @@
 					"light": "resources/light/trash.svg",
 					"dark": "resources/dark/trash.svg"
 				}
+			},
+			{
+				"command": "save-commands.export",
+				"title": "Export",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/export.svg",
+					"dark": "resources/dark/export.svg"
+				}
+			},
+			{
+				"command": "save-commands.import",
+				"title": "Import",
+				"category": "Save Commands",
+				"icon": {
+					"light": "resources/light/import.svg",
+					"dark": "resources/dark/import.svg"
+				}
 			}
 		],
 		"views": {
@@ -182,12 +200,30 @@
 				{
 					"command": "save-commands.editFolder",
 					"when": "false"
+				},
+				{
+					"command": "save-commands.import",
+					"when": "false"
+				},
+				{
+					"command": "save-commands.export",
+					"when": "false"
 				}
 			],
 			"view/title": [
 				{
 					"command": "save-commands.reset",
 					"when": "view == save-commands-view"
+				},
+				{
+					"command": "save-commands.export",
+					"when": "view == save-commands-view",
+					"group": "Backup"
+				},
+				{
+					"command": "save-commands.import",
+					"when": "view == save-commands-view",
+					"group": "Backup"
 				},
 				{
 					"command": "save-commands.refreshView",
@@ -234,7 +270,6 @@
 				},
 				{
 					"command": "save-commands.deleteCommands",
-					"group": "inline",
 					"when": "view == save-commands-view && viewItem == root"
 				},
 				{

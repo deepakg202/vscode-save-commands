@@ -9,6 +9,8 @@ import addCommandFn from "./addCommand";
 import deleteCommandsFn from "./deleteCommands";
 import deleteFolderFn from "./deleteFolder";
 import editFolderFn from "./editFolder";
+import exportFn from "./export";
+import importFn from "./import";
 
 export {
 	deleteCommandFn,
@@ -22,4 +24,6 @@ export {
 	deleteCommandsFn,
 	deleteFolderFn,
 	editFolderFn,
+	exportFn,
+	importFn,
 };

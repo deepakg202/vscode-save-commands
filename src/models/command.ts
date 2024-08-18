@@ -33,20 +33,21 @@ export default class Command {
 		);
 	}
 
-	static create(
-		name: string,
-		command: string,
-		placeholderType: PlaceholderType,
-	) {
+	static create(fields: {
+		name: string;
+		command: string;
+		parentFolderId: string | null;
+		placeholderType: PlaceholderType;
+	}) {
 		const id = uuidv4();
+		const { name, command, parentFolderId, placeholderType } = fields;
 		return Command.fromJsonSafe({
 			id,
 			name,
 			command,
 			placeholderTypeId: placeholderType.id,
 			sortOrder: 0,
-			// TODO: handle
-			parentFolderId: null,
+			parentFolderId: parentFolderId,
 		});
 	}
 

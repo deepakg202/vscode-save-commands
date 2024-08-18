@@ -13,16 +13,23 @@ export default function (context: vscode.ExtensionContext) {
 				ReadableError.runGuarded(async () => {
 					const { etter } = CommandFolder.getEtterFromTreeContext(item);
 					const folders = etter.getValue(context);
-					const i = folders.findIndex((d: CommandFolder) => d.id === item.id);
-					if (i > -1) {
-						folders.splice(i, 1);
-					}
-					etter.setValue(context, folders);
+
+					const childFolders = new Set<string>([item.id as string]);
+					const filteredFolders = folders.filter((f) => {
+						if (f.id === item.id) return false;
+						if (!!f.parentFolderId && childFolders.has(f.parentFolderId)) {
+							childFolders.add(f.id);
+							return false;
+						}
+						return true;
+					});
+
+					etter.setValue(context, filteredFolders);
 
 					const { etter: commandEtter } = Command.getEtterFromTreeContext(item);
 					const commands = commandEtter.getValue(context);
 					const filteredCommands = commands.filter(
-						(c) => c.parentFolderId !== item.id,
+						(c) => !childFolders.has(c.parentFolderId ?? ""),
 					);
 					commandEtter.setValue(context, filteredCommands);
 

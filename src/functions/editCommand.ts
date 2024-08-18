@@ -20,6 +20,7 @@ export default function (context: vscode.ExtensionContext) {
 					name: commands[i].name,
 					cmd: commands[i].command,
 					placeholderType: commands[i].getPlaceholderType(),
+					parentFolderId: item.parentFolderId ?? null,
 				});
 				commands[i].name = val.name;
 				commands[i].command = val.command;

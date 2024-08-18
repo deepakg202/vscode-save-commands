@@ -8,7 +8,7 @@ import {
 } from "./models/placeholder_types";
 import { CommandFolder } from "./models/command_folder";
 
-enum Decision {
+export enum Decision {
 	yes = "Yes",
 	no = "No",
 }
@@ -71,6 +71,7 @@ export const commandInput = async (
 	defaults?: {
 		name?: string;
 		cmd?: string;
+		parentFolderId: string | null;
 		placeholderType?: PlaceholderType;
 	},
 ): Promise<Command> => {
@@ -108,7 +109,12 @@ export const commandInput = async (
 			throw new Error("Bad Input");
 		}
 		return Promise.resolve(
-			Command.create(name.trim(), cmd.trim(), activePlaceholderType),
+			Command.create({
+				name: name.trim(),
+				command: cmd.trim(),
+				placeholderType: activePlaceholderType,
+				parentFolderId: defaults?.parentFolderId ?? null,
+			}),
 		);
 	} catch (err) {
 		console.log("Error Adding Command");

@@ -5,6 +5,7 @@ import { ExecCommands } from "../models/exec_commands";
 import type TreeItem from "../TreeItem";
 import { StateType } from "../models/etters";
 import ReadableError from "../models/error";
+import { ContextValue } from "../TreeProvider";
 
 export default function (context: vscode.ExtensionContext) {
 	return async (item: TreeItem) => {
@@ -16,8 +17,12 @@ export default function (context: vscode.ExtensionContext) {
 					? CommandInputType.addGlobal
 					: CommandInputType.addWorkspace;
 
+			const folderId =
+				item.contextValue === ContextValue.folder ? item.id : null;
 			vscode.window.showWarningMessage("Add Command");
-			const newCommand = await commandInput(commandInputType);
+			const newCommand = await commandInput(commandInputType, {
+				parentFolderId: folderId ?? null,
+			});
 			const commands = etter.getValue(context);
 			commands.push(newCommand);
 			etter.setValue(context, commands);

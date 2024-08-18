@@ -14,6 +14,8 @@ import {
 	runCommandInActiveTerminalFn,
 	deleteFolderFn,
 	editFolderFn,
+	exportFn,
+	importFn,
 } from "./functions";
 
 export function activate(context: vscode.ExtensionContext) {
@@ -34,6 +36,8 @@ export function activate(context: vscode.ExtensionContext) {
 		[ExecCommands.addFolder]: addFolderFn(context),
 		[ExecCommands.deleteFolder]: deleteFolderFn(context),
 		[ExecCommands.editFolder]: editFolderFn(context),
+		[ExecCommands.export]: exportFn(context),
+		[ExecCommands.import]: importFn(context),
 	};
 
 	const subscriptions = Object.keys(callbacks).map((key) => {

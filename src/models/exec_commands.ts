@@ -11,4 +11,6 @@ export enum ExecCommands {
 	addFolder = "save-commands.addFolder",
 	deleteFolder = "save-commands.deleteFolder",
 	editFolder = "save-commands.editFolder",
+	export = "save-commands.export",
+	import = "save-commands.import",
 }
