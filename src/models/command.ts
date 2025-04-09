@@ -98,12 +98,15 @@ export default class Command {
 		}
 
 		const inputs: Record<string, string> = {};
-		for (const placeholder of matches) {
+
+		for (const placeholder in matches) {
 			const input = await takeSingleInput({
 				promptText: `${resolveCommandType} | ${this.name} | ${placeholder} | `,
 				placeholder: `Enter ${placeholder}`,
 			});
-			inputs[placeholder] = input;
+			matches[placeholder].forEach((match) => {
+				inputs[match] = input;
+			});
 		}
 		const resolvedCommand = this.command.replace(regex, (match) => {
 			if (match in inputs) {

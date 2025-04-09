@@ -4,8 +4,19 @@ export abstract class PlaceholderType {
 
 	abstract wrapLabel(label: string): string;
 
-	extractPlaceholders = (str: string): Array<string> | null => {
-		return str.match(this.regex);
+	extractPlaceholders = (str: string): Record<string, Set<string>> | null => {
+		const matches = str.match(this.regex) ?? null;
+		if (!matches) return null;
+		const placeholders: Record<string, Set<string>> = {}
+		matches?.map((m) => {
+			const text = m.replace(/^\W+|\W+$/g, '')
+			if (!placeholders[text]) {
+				placeholders[text] = new Set([m])
+			} else {
+				placeholders[text].add(m)
+			}
+		});
+		return placeholders;
 	};
 
 	static getPlaceholderTypeFromId(id: string) {
